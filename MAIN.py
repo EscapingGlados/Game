@@ -44,7 +44,8 @@ state='idle'
 pl,pw=[50,50] #player length and width
 px,py=[100,450]
 player = draw.rect(screen,(50,50,182),(px,py,pl,pw))
-            
+hit = None
+hit1 = None         
 grav_velocity=0 #the value that will provide constant gravity and will decide how high the player will jump
 
 forced_end = False # [x change, y change, frames left]
@@ -76,7 +77,14 @@ def state_change(state,jump,left,right):
     else:
         state='idle'
     return state
-
+def bullet_collideWall(portal):
+    if portal != [False]:
+        posRect = Rect(portal[0]-8,portal[1]-8,16,16)
+        for wall in wall2_rects:
+            if wall.colliderect(posRect):
+                return True
+                break
+    return False
 def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
@@ -218,6 +226,7 @@ def facing(x,y):
             
 
 def shooting(bullet, col):
+    global hit,hit1
     portal = bullet[:]
     if portal[-1] == None and portal != [None]:
         distance = portal[-2]
@@ -232,10 +241,17 @@ def shooting(bullet, col):
                 if bullet_collide([x,y]) == False:
                     portal[-1] = facing(x,y)
                     portal[0] = [x,y]
+                    if col == (8,131,219):
+                       hit = True
+                    elif col == (252,69,2):
+                        hit1 = True
                     break
-                
-        draw.circle(screen,col,(x_pos,y_pos),16)
-        portal[-2] += 50
+        if bullet_collideWall([x_pos,y_pos]):
+            portal = [False]
+            
+        if portal != [False]:
+            draw.circle(screen,col,(x_pos,y_pos),16)
+            portal[-2] += 50
         
     return portal
 
@@ -287,10 +303,10 @@ while running:
     
     #player=draw.rect(screen,(50,50,182),(px,py,pl,pw))
 
-    if bluep[-1] != None:
+    if bluep[-1] != False and hit:
         draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],16)
 
-    if orangep[-1] != None:
+    if orangep[-1] != False and hit1:
         draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],16)
     frame+=1
     oldpos=[px,py]
