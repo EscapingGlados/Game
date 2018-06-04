@@ -1,31 +1,42 @@
 from pygame import *
 from math import *
 import time
+import os
+import pickle
 
 init()
 
 screen=display.set_mode((800,600))
 running = True
 
-brick = image.load('surface2.bmp')
-brick=transform.scale(brick,(25,25))
+brick = transform.scale(image.load('surface2.bmp'),(10,10))
+block = transform.scale(image.load('block.png'),(10,10))
 backg=image.load('background.bmp')
 
-map_grid=open("text_mask.txt").read().strip().split("\n")
-
+def loadMap(fname):
+    if fname in os.listdir("."):
+        myPFile = open(fname, "rb")
+        return pickle.load(myPFile)       
+    else:
+        return [[0]*60 for x in range(80)]
+map_grid = loadMap("level1.p")
 wall_rects=[]
+wall2_rects = [] 
 
-#appends rects and positions
-def collide_load(map_grid):
-    for x in range(len(map_grid)):
-        for y in range(len(map_grid[x])):
-            if map_grid[x][y]=='w':
-                wall_rects.append(Rect(y*25,x*25,25,25))
-collide_load(map_grid)
+for x in range(80):
+    for y in range(60):
+        c = map_grid[x][y]
+        if c == 1:
+            wall_rects.append(Rect((x*10,y*10,10,10)))
+        if c == 2:
+            wall2_rects.append(Rect((x*10,y*10,10,10)))
+            
 def drawback(screen):
     'Draws the bricks/platforms of the level'
     for w in wall_rects:
         screen.blit(brick,(w[0],w[1]))
+    for l in wall2_rects:
+        screen.blit(block,(l[0],l[1]))
 
 portal_state='idle'
 state='idle'
@@ -184,9 +195,15 @@ def bullet_collide(pos):
 def collide(oldpos,newpos,grid):
     'Checks if the new position is vacant, if not, will return the old position'
     new_rect=Rect(newpos[0],newpos[1],pl,pw)
+    
     for wall in wall_rects:
         if wall.colliderect(new_rect):
             return oldpos
+        
+    for x in wall2_rects:
+        if x.colliderect(new_rect):
+            return oldpos
+        
     return newpos
 
 def facing(x,y):
