@@ -66,7 +66,7 @@ idle.append(transform.scale(image.load('1.png'),(50,70)))
 forward=[]
 frame=0
 for i in range(2,26):
-    forward.append(transform.scale(image.load(str(i+1)+".png"),(70,100)))
+    forward.append(transform.scale(image.load(str(i+1)+".png"),(50,70)))
     
 def state_change(state,jump,left,right):
     if jump:
@@ -83,22 +83,22 @@ Also includes the moving of player concerning portals.'''
 
     playerpos=list(playerpos)
     startpos = playerpos[:]
-    if state=='moving':
+    if keys[K_a] or keys[K_d]:
         screen.blit(forward[frame%24],playerpos)
     if keys[K_d]:
         playerpos=list(playerpos)
         playerpos[0]+=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
-        state=state_change(state,False,True,False)
+        #state=state_change(state,False,True,False)
     if keys[K_a]:
         playerpos=list(playerpos)
         playerpos[0]-=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
-        state=state_change(state,False,False,True)
-    if not keys[K_a] and not keys[K_d]:
-        state=state_change(state,False,False,False)
+        #state=state_change(state,False,False,True)
+  #  if not keys[K_a] and not keys[K_d]:
+   #     state=state_change(state,False,False,False)
         
 
     newpos=playerpos[:]
@@ -266,7 +266,7 @@ while running:
 #----SHOOTING--------------------------------
     if b_click:
         bluep=[[px+25,py+25],atan2(my-(py+25), mx-(px+25)),1,None]
-    if state=='idle' or state=='jump':
+    if (state=='idle' or state=='jump') and not keys[K_a] and not keys[K_d]:
         screen.blit(idle[frame%1],(px,py))
         
     if state=='moving':
