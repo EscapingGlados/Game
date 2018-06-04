@@ -12,7 +12,7 @@ block = transform.scale(image.load('block.png'),(25,25))
 backg=image.load('background.bmp')
 
 
-#dfsdfklsdnfasjfnasldnasdnasldknasklnalfknsadklasndlkasdn
+#milk me
 def loadMap(fname):
     if fname in os.listdir("."):
         myPFile = open(fname, "rb")
