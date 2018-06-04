@@ -13,6 +13,7 @@ backg=image.load('background.bmp')
 
 
 #dfsdfklsdnfasjfnasldnasdnasldknasklnalfknsadklasndlkasdn
+#testing github stuffffffff
 def loadMap(fname):
     if fname in os.listdir("."):
         myPFile = open(fname, "rb")
