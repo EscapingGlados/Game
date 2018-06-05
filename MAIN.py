@@ -261,7 +261,7 @@ def shooting(bullet, col):
             portal = [None]
             
         if portal != [None]:
-            draw.circle(screen,col,(x_pos,y_pos),16)
+            draw.circle(screen,col,(x_pos,y_pos),8)
             portal[-2] += 50
         
     return portal
@@ -328,10 +328,10 @@ while running:
     #player=draw.rect(screen,(50,50,182),(px,py,pl,pw))
     #draw.rect(screen,(0,255,0),(px,py,pl,pw),3)
     if bluep[-1] != None and hit:
-        draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],16)
+        draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],8)
 
     if orangep[-1] != None and hit1:
-        draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],16)
+        draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],8)
     frame+=1
     oldpos=[px,py]
     display.flip()
