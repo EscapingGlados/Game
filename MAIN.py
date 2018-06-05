@@ -117,7 +117,7 @@ Also includes the moving of player concerning portals.'''
     playerpos=collide(oldpos,newpos,map_grid)
     oldpos = playerpos[:]
     
-    if state=='jump' and not forced_end:
+    if state=='jump' and not forced_end: #if nothing in forced_end
         playerpos=list(playerpos)
         playerpos[1]+=grav_velocity
         grav_velocity+=0.4
@@ -125,11 +125,11 @@ Also includes the moving of player concerning portals.'''
         playerpos=collide(oldpos,newpos,map_grid)
         if playerpos==oldpos and oldpos[1]<newpos[1]: #this checks if player is coming down from jump//nothing is effecting  except gravity
             state=state_change(state,False,False,False)
-    elif forced_end:
-        playerpos[0] += forced_end[0]
-        playerpos[1] += forced_end[1]
-        forced_end[2] -= 0.75
-        if forced_end[2] <= 0:
+    elif forced_end: #True if something in it
+        playerpos[0] += forced_end[0] #adds dx to px
+        playerpos[1] += forced_end[1] #adds dy to py
+        forced_end[2] -= 0.75 #makes forced push smaller
+        if forced_end[2] <= 0: #ends when nothing left
             forced_end = False
 
     newpos=playerpos[:]
@@ -174,15 +174,15 @@ Also includes the moving of player concerning portals.'''
 
                 if bluep[-1] == orangep[-1]: #Same one, inverse that component
 
-                    ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y)
+                    ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) #if on same wall got to make it push 180 the other portal
                     forced_end = [ddx, ddy, 10]
 
                 else: #Opposite direction, keep it identical
-                    forced_end = [de_x, de_y, 10]
+                    forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
                     
             else: #Changing both components
                 de_x, de_y = de_y, de_x #Reverse them
-                ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y)
+                ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) 
                 forced_end = [ddx, ddy, 10]
                 
     newpos=playerpos[:]
