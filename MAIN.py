@@ -64,11 +64,16 @@ last_tp = time.time()
 
 idle=[]
 idle.append(transform.scale(image.load('1.png'),(50,70)))
+idle.append(transform.scale(image.load('l1.png'),(50,70)))
 forward=[]
+backward=[]
 frame=0
+frame2=0
+direction_face=0
 for i in range(2,26):
     forward.append(transform.scale(image.load(str(i+1)+".png"),(50,70)))
-    
+for i in range(2,26):
+    backward.append(transform.scale(image.load('l'+str(i+1)+".png"),(50,70)))    
 def state_change(state,jump,left,right):
     if jump:
         state='jump'
@@ -91,8 +96,7 @@ Also includes the moving of player concerning portals.'''
 
     playerpos=list(playerpos)
     startpos = playerpos[:]
-    if keys[K_a] or keys[K_d]:
-        screen.blit(forward[frame%24],playerpos)
+    
     if keys[K_d]:
         playerpos=list(playerpos)
         playerpos[0]+=5
@@ -259,6 +263,9 @@ oldpos=[px,py]
 while running:
     b_click=False
     o_click=False
+    keys=key.get_pressed()
+    mb=mouse.get_pressed()
+    mx,my=mouse.get_pos()
     for e in event.get():
         if e.type==QUIT:
             running=False
@@ -266,14 +273,16 @@ while running:
             b_click=True
         elif e.type==MOUSEBUTTONDOWN and e.button==3:
             o_click=True
+        if keys[K_d]:
+            direction_face=0
+        if keys[K_a]:
+            direction_face=1
 
     screen.blit(backg,(0,0))
     drawback(screen)
     
 
-    keys=key.get_pressed()
-    mb=mouse.get_pressed()
-    mx,my=mouse.get_pos()
+    
 
 #----MOVING----------------------------------
     
@@ -282,12 +291,12 @@ while running:
 #----SHOOTING--------------------------------
     if b_click:
         bluep=[[px+25,py+25],atan2(my-(py+25), mx-(px+25)),1,None]
-    if (state=='idle' or state=='jump') and not keys[K_a] and not keys[K_d]:
-        screen.blit(idle[frame%1],(px,py))
+    if (state=='idle' or state=='jump') and ((not keys[K_a] and not keys[K_d]) or (keys[K_a] and keys[K_d])):
+        screen.blit(idle[direction_face],(px,py))
         
-    if state=='moving':
-        screen.blit(forward[frame%24],(px,py))
-        print('hi')
+  #  if state=='moving':
+   #     screen.blit(forward[frame%24],(px,py))
+    #    print('hi')
     
     bluep = shooting(bluep, (8,131,219))
     
@@ -300,7 +309,10 @@ while running:
 
     orangep = shooting(orangep, (252,69,2))
 #----DRAWING---------------------------------
-    
+    if  keys[K_d] and not keys[K_a]:
+        screen.blit(forward[frame%24],(px,py))
+    if keys[K_a] and not keys[K_d]:
+        screen.blit(backward[frame%24],(px,py))
     #player=draw.rect(screen,(50,50,182),(px,py,pl,pw))
 
     if bluep[-1] != False and hit:
