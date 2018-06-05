@@ -161,20 +161,20 @@ Also includes the moving of player concerning portals.'''
             de_y = begin_pos[1] - startpos[1]
             
             categories = {"Right":True, "Left":True, "Up": False, "Down": False}
-            bonuses = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
+            tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
             def rev_abs(num):
                 return abs(num)*-1
             
-            playerpos = [playerpos[0] + bonuses[0], playerpos[1] + bonuses[1]]
+            playerpos = [playerpos[0] + tele_adjust[0], playerpos[1] + tele_adjust[1]]
             
-            good_funcs = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]}[outways] #adjusts where to teleport in quadrants
+            quadrant_adjust = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]} #adjusts where to teleport in quadrants
 
             if categories[bluep[-1]] == categories[orangep[-1]]: #Just changing one component
                 
 
                 if bluep[-1] == orangep[-1]: #Same one, inverse that component
 
-                    ddx, ddy = good_funcs[0](de_x), good_funcs[1](de_y)
+                    ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y)
                     forced_end = [ddx, ddy, 10]
 
                 else: #Opposite direction, keep it identical
@@ -182,7 +182,7 @@ Also includes the moving of player concerning portals.'''
                     
             else: #Changing both components
                 de_x, de_y = de_y, de_x #Reverse them
-                ddx, ddy = good_funcs[0](de_x), good_funcs[1](de_y)
+                ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y)
                 forced_end = [ddx, ddy, 10]
                 
     newpos=playerpos[:]
