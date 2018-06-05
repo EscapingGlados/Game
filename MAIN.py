@@ -134,8 +134,6 @@ Also includes the moving of player concerning portals.'''
         if forced_end[2] <= 0: #ends when nothing left
             forced_end = False
     
-    if forced_end[0] == 0:
-        forced_end[-1] = 0
         
     newpos=playerpos[:]
     playerpos=collide(oldpos,newpos,map_grid)
