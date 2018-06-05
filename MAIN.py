@@ -167,7 +167,7 @@ Also includes the moving of player concerning portals.'''
             
             playerpos = [playerpos[0] + tele_adjust[0], playerpos[1] + tele_adjust[1]]
             
-            quadrant_adjust = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]} #adjusts where to teleport in quadrants
+            quadrant_adjust = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]}[outways] #adjusts where to teleport in quadrants
 
             if categories[bluep[-1]] == categories[orangep[-1]]: #Just changing one component
                 
