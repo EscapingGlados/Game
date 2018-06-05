@@ -98,13 +98,13 @@ Also includes the moving of player concerning portals.'''
     playerpos=list(playerpos)
     startpos = playerpos[:]
     
-    if keys[K_d]:
+    if keys[K_d] and not forced_end:
         playerpos=list(playerpos)
         playerpos[0]+=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
         #state=state_change(state,False,True,False)
-    if keys[K_a]:
+    if keys[K_a] and not forced_end:
         playerpos=list(playerpos)
         playerpos[0]-=5
         newpos=playerpos[:]
@@ -121,18 +121,22 @@ Also includes the moving of player concerning portals.'''
     if state=='jump' and not forced_end: #if nothing in forced_end
         playerpos=list(playerpos)
         playerpos[1]+=grav_velocity
-        grav_velocity+=0.4
+        grav_velocity+=0.75
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
         if playerpos==oldpos and oldpos[1]<newpos[1]: #this checks if player is coming down from jump//nothing is effecting  except gravity
             state=state_change(state,False,False,False)
+
     elif forced_end: #True if something in it
         playerpos[0] += forced_end[0] #adds dx to px
-        playerpos[1] += forced_end[1] #adds dy to py
+        playerpos[1] += forced_end[1]+4 #adds dy to py
         forced_end[2] -= 0.75 #makes forced push smaller
         if forced_end[2] <= 0: #ends when nothing left
             forced_end = False
-
+    
+    if forced_end[0] == 0:
+        forced_end[-1] = 0
+        
     newpos=playerpos[:]
     playerpos=collide(oldpos,newpos,map_grid)
 
@@ -146,12 +150,12 @@ Also includes the moving of player concerning portals.'''
         #switched = False
         outways = None
         
-        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 50:
+        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 60:
             playerpos = orangep[0]
             switched= True
             outways = orangep[-1] #direction it is facing
             
-        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 50:
+        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 60:
             playerpos = bluep[0]
             switched= True
             outways = bluep[-1]
