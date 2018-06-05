@@ -12,7 +12,7 @@ running = True
 brick = transform.scale(image.load('surface2.bmp'),(10,10))
 block = transform.scale(image.load('block.png'),(10,10))
 backg=image.load('background.bmp')
-
+cube=transform.scale(image.load('comp_cube.png'),(20,20))
 def loadMap(fname):
     if fname in os.listdir("."):
         myPFile = open(fname, "rb")
@@ -70,6 +70,7 @@ backward=[]
 frame=0
 frame2=0
 direction_face=0
+cx,cy=300,450
 for i in range(2,26):
     forward.append(transform.scale(image.load(str(i+1)+".png"),(50,70)))
 for i in range(2,26):
@@ -294,6 +295,7 @@ while running:
 #----MOVING----------------------------------
     
     (px,py),state,grav_velocity,oldpos,last_tp,forced_end=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end)
+    
 
 #----SHOOTING--------------------------------
     if b_click:
@@ -332,6 +334,7 @@ while running:
 
     if orangep[-1] != None and hit1:
         draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],8)
+    screen.blit(cube,(cx,cy))
     frame+=1
     oldpos=[px,py]
     display.flip()
