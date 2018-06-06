@@ -21,7 +21,8 @@ def loadMap(fname):
         return [[0]*60 for x in range(80)]
 map_grid = loadMap("level1.p")
 wall_rects=[]
-wall2_rects = [] 
+wall2_rects = []
+blockList = []
 
 for x in range(80):
     for y in range(60):
@@ -30,6 +31,8 @@ for x in range(80):
             wall_rects.append(Rect((x*10,y*10,10,10)))
         if c == 2:
             wall2_rects.append(Rect((x*10,y*10,10,10)))
+        if c == 3:
+            blockList.append(Rect((x*10,y*10,10,10)))
             
 def drawback(screen):
     'Draws the bricks/platforms of the level'
@@ -37,6 +40,8 @@ def drawback(screen):
         screen.blit(brick,(w[0],w[1]))
     for l in wall2_rects:
         screen.blit(block,(l[0],l[1]))
+    for b in blockList:
+        draw.rect(screen,(255,0,0),(b[0],b[1],10,10))
 
 portal_state='idle'
 state='idle'
@@ -195,10 +200,14 @@ Also includes the moving of player concerning portals.'''
     if not switched and collide(oldpos,[oldpos[0],oldpos[1]+1],map_grid)==[oldpos[0],oldpos[1]+1] and state!='jump': #is gravity when player isn't jumping//checks if a pixel beneath is vacant or not
         state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity=0
-    if keys[K_w] and state!='jump' :
+    if keys[K_w] and state!='jump':
         state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity=-8 #a negative gravity makes it go up
-    
+        
+    if jumpBlock(oldpos,newpos) and keys[K_w]:
+        state=state_change(state,True,keys[K_d],keys[K_a])
+        grav_velocity=-20 #a negative gravity makes it go up       
+        
     return playerpos,state,grav_velocity,oldpos,last_tp,forced_end
 
 def bullet_collide(pos):
@@ -227,8 +236,17 @@ def collide(oldpos,newpos,grid):
         if x.colliderect(new_rect):
             return oldpos
         
+    for b in blockList:
+        if b.colliderect(new_rect):
+            return oldpos
     return newpos
-
+def jumpBlock(oldpos,newpos):
+    new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
+    for b in blockList:
+        if b.colliderect(new_rect):
+            return True
+            
+    
 def facing(x,y):
     if bullet_collide((x+16,y)):
         return 'Left'
