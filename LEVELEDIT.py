@@ -25,7 +25,7 @@ def saveMap(level, fname):
     pickle.dump(level, myPFile)
 
 screen = display.set_mode((800,600))
-col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0)]
+col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(65,65,65),(0,0,0),(0,0,0),(0,0,0)]
 current = 1
 back = image.load("background.bmp")
 level = loadMap("level1.p")
