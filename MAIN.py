@@ -129,9 +129,10 @@ Also includes the moving of player concerning portals.'''
 
     elif forced_end: #True if something in it
         playerpos[0] += forced_end[0] #adds dx to px
-        playerpos[1] += forced_end[1]+4 #adds dy to py
-        forced_end[2] -= 0.75 #makes forced push smaller
-        if forced_end[2] <= 0: #ends when nothing left
+        playerpos[1] += forced_end[1]+2 #adds dy to py
+        forced_end[2] -= 1 #makes forced push smaller
+        
+        if forced_end[2] < 0: #ends when nothing left
             forced_end = False
     
         
