@@ -100,17 +100,7 @@ def bullet_collideWall(portal):
                 return True
                 break
     return False
-
-def cube_move(cubepos,grav_velocity,playerpos):
-    'Companion Cube Movement'
-    cubepos=list(cubepos)
-    startpos=playerpos[:]
-    if keys[K_d]:
-        cubepos[0]+=2
-        newpos=playerpos[:]
-        cubepos=collide(startpos,newpos,map_grid)
-    return cubepos
-def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos):
+def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
 
@@ -119,15 +109,7 @@ Also includes the moving of player concerning portals.'''
     
     if keys[K_d] and not forced_end:
         playerpos=list(playerpos)
-        if cubepos!=None:
-            if Rect(cubepos[0],cubepos[1],20,20).colliderect(Rect(playerpos[0],playerpos[1],50,50)):
-                playerpos[0]+=2
-                cubepos=cube_move(cubepos,grav_velocity,playerpos)
-                
-            else:
-                playerpos[0]+=5
-        else:
-            playerpos[0]+=5
+        playerpos[0]+=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
         #state=state_change(state,False,True,False)
@@ -226,13 +208,15 @@ Also includes the moving of player concerning portals.'''
         state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity=-8 #a negative gravity makes it go up
         
-    if jumpBlock(oldpos,newpos):
- #       state=state_change(state,True,keys[K_d],keys[K_a])
-        grav_velocity=-15 #a negative gravity makes it go up
+    if jumpBlock(oldpos,newpos) and keys[K_w]:
+        state=state_change(state,True,keys[K_d],keys[K_a])
+        grav_velocity=-20 #a negative gravity makes it go up
+        
     if launch(oldpos,newpos):
+        state = 'jump'
         grav_velocity = -15
         
-    return playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos
+    return playerpos,state,grav_velocity,oldpos,last_tp,forced_end
 
 def bullet_collide(pos):
     pos_rect=Rect(pos[0]-8,pos[1]-8,16,16)
@@ -348,7 +332,7 @@ while running:
 
 #----MOVING----------------------------------
     
-    (px,py),state,grav_velocity,oldpos,last_tp,forced_end,(cx,cy)=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end,(cx,cy))
+    (px,py),state,grav_velocity,oldpos,last_tp,forced_end=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end)
     
 
 #----SHOOTING--------------------------------
