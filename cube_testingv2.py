@@ -23,19 +23,16 @@ map_grid = loadMap("level1.p")
 wall_rects=[]
 wall2_rects = []
 blockList = []
-launchPad = []
 
 for x in range(80):
     for y in range(60):
         c = map_grid[x][y]
         if c == 1:
-            wall_rects.append(Rect((x*10,y*10,10,10)))#nonclickable
+            wall_rects.append(Rect((x*10,y*10,10,10)))
         if c == 2:
-            wall2_rects.append(Rect((x*10,y*10,10,10)))#clickable
+            wall2_rects.append(Rect((x*10,y*10,10,10)))
         if c == 3:
-            blockList.append(Rect((x*10,y*10,10,10)))#jump slime
-        if c == 4:
-            launchPad.append(Rect((x*10,y*10,10,10)))#launchpad
+            blockList.append(Rect((x*10,y*10,10,10)))
             
 def drawback(screen):
     'Draws the bricks/platforms of the level'
@@ -45,8 +42,7 @@ def drawback(screen):
         screen.blit(block,(l[0],l[1]))
     for b in blockList:
         draw.rect(screen,(255,0,0),(b[0],b[1],10,10))
-    for p in launchPad:
-        draw.rect(screen,(65,65,65),(p[0],p[1],10,10))
+
 portal_state='idle'
 state='idle'
 
@@ -226,11 +222,9 @@ Also includes the moving of player concerning portals.'''
         state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity=-8 #a negative gravity makes it go up
         
-    if jumpBlock(oldpos,newpos):
- #       state=state_change(state,True,keys[K_d],keys[K_a])
-        grav_velocity=-15 #a negative gravity makes it go up
-    if launch(oldpos,newpos):
-        grav_velocity = -15
+    if jumpBlock(oldpos,newpos) and keys[K_w]:
+        state=state_change(state,True,keys[K_d],keys[K_a])
+        grav_velocity=-20 #a negative gravity makes it go up       
         
     return playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos
 
@@ -263,23 +257,14 @@ def collide(oldpos,newpos,grid):
     for b in blockList:
         if b.colliderect(new_rect):
             return oldpos
-
-    for p in launchPad:
-        if p.colliderect(new_rect):
-            return oldpos
     return newpos
-
 def jumpBlock(oldpos,newpos):
     new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
     for b in blockList:
         if b.colliderect(new_rect):
             return True
-def launch(oldpos,newpos):
-    new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
-    for p in launchPad:
-        if p.colliderect(new_rect):
-            return True
-
+            
+    
 def facing(x,y):
     if bullet_collide((x+16,y)):
         return 'Left'
