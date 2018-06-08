@@ -49,6 +49,7 @@ def drawback(screen):
         draw.rect(screen,(65,65,65),(p[0],p[1],10,10))
 portal_state='idle'
 state='idle'
+mode = 'idle'
 
 pl,pw=[50,60] #player length and width
 px,py=[100,450]
@@ -56,7 +57,7 @@ px,py=[100,450]
 hit = None
 hit1 = None         
 grav_velocity=0 #the value that will provide constant gravity and will decide how high the player will jump
-
+xchange = 0
 forced_end = False # [x change, y change, frames left]
 
 
@@ -85,12 +86,14 @@ for i in range(2,26):
 for i in range(2,26):
     backward.append(transform.scale(image.load('l'+str(i+1)+".png"),(50,70)))    
 def state_change(state,jump,left,right):
+    global mode
     if jump:
         state='jump'
     elif left or right:
         state='moving'
     else:
         state='idle'
+        mode = 'idle'
     return state
 def bullet_collideWall(portal):
     if portal != [False]:
@@ -103,7 +106,7 @@ def bullet_collideWall(portal):
 def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
-
+    global mode,xchange
     playerpos=list(playerpos)
     startpos = playerpos[:]
     
@@ -213,8 +216,18 @@ Also includes the moving of player concerning portals.'''
         grav_velocity=-20 #a negative gravity makes it go up
         
     if launch(oldpos,newpos):
-        state = 'jump'
-        grav_velocity = -15
+        grav_velocity = -20
+        xchange = -20
+        mode = 'launching'
+        
+    if mode =='launching': #if nothing in forced_end
+        playerpos=list(playerpos)
+        playerpos[1] += grav_velocity
+        playerpos[0] -= xchange
+        grav_velocity+=0.75
+        newpos=playerpos[:]
+ #       playerpos=collide(oldpos,newpos,map_grid)
+
         
     return playerpos,state,grav_velocity,oldpos,last_tp,forced_end
 
