@@ -121,16 +121,12 @@ Also includes the moving of player concerning portals.'''
         playerpos[0]+=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
-        #state=state_change(state,False,True,False)
+
     if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
         playerpos[0]-=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
-        #state=state_change(state,False,False,True)
-  #  if not keys[K_a] and not keys[K_d]:
-   #     state=state_change(state,False,False,False)
-        
 
     newpos=playerpos[:]
     playerpos=collide(oldpos,newpos,map_grid)
@@ -238,9 +234,9 @@ Also includes the moving of player concerning portals.'''
         grav_velocity+=0.75
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
+        
     if mode == 'launchingleft':
         playerpos=list(playerpos)
-
         playerpos[1] += grav_velocity
         playerpos[0] += xchange
         grav_velocity+=0.75
@@ -381,9 +377,6 @@ while running:
     if (state=='idle' or state=='jump') and ((not keys[K_a] and not keys[K_d]) or (keys[K_a] and keys[K_d])):
         screen.blit(idle[direction_face],(px,py))
         
-  #  if state=='moving':
-   #     screen.blit(forward[frame%24],(px,py))
-    #    print('hi')
     
     bluep = shooting(bluep, (8,131,219))
     
@@ -405,8 +398,7 @@ while running:
         screen.blit(forward[frame%24],(px,py))
     if keys[K_a] and not keys[K_d]:
         screen.blit(backward[frame%24],(px,py))
-    #player=draw.rect(screen,(50,50,182),(px,py,pl,pw))
-    #draw.rect(screen,(0,255,0),(px,py,pl,pw),3)
+
     if bluep[-1] != None and hit:
         draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],8)
 
