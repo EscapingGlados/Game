@@ -23,7 +23,8 @@ map_grid = loadMap("level1.p")
 wall_rects=[]
 wall2_rects = []
 blockList = []
-launchPad = []
+launchPad = []#right shooting
+launchPad2 = []#left shooting
 
 for x in range(80):
     for y in range(60):
@@ -35,7 +36,9 @@ for x in range(80):
         if c == 3:
             blockList.append(Rect((x*10,y*10,10,10)))#jump slime
         if c == 4:
-            launchPad.append(Rect((x*10,y*10,10,10)))#launchpad
+            launchPad.append(Rect((x*10,y*10,10,10)))#launchpadright
+        if c == 5:
+            launchPad2.append(Rect((x*10,y*10,10,10)))#launchpadleft
             
 def drawback(screen):
     'Draws the bricks/platforms of the level'
@@ -47,6 +50,9 @@ def drawback(screen):
         draw.rect(screen,(255,0,0),(b[0],b[1],10,10))
     for p in launchPad:
         draw.rect(screen,(65,65,65),(p[0],p[1],10,10))
+    for x in launchPad2:
+        draw.rect(screen,(0,0,255),(x[0],x[1],10,10))
+
 portal_state='idle'
 state='idle'
 mode = 'idle'
@@ -110,13 +116,13 @@ Also includes the moving of player concerning portals.'''
     playerpos=list(playerpos)
     startpos = playerpos[:]
     
-    if keys[K_d] and not forced_end:
+    if keys[K_d] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
         playerpos[0]+=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
         #state=state_change(state,False,True,False)
-    if keys[K_a] and not forced_end:
+    if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
         playerpos[0]-=5
         newpos=playerpos[:]
@@ -215,19 +221,31 @@ Also includes the moving of player concerning portals.'''
         state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity=-20 #a negative gravity makes it go up
         
-    if launch(oldpos,newpos):
+    if launch(oldpos,newpos) == 'right':
         grav_velocity = -20
         xchange = -20
-        mode = 'launching'
+        mode = 'launchingright'
         
-    if mode =='launching': #if nothing in forced_end
+    if launch(oldpos,newpos) == 'left':
+        grav_velocity = -20
+        xchange = -20
+        mode = 'launchingleft'
+        
+    if mode =='launchingright': #if nothing in forced_end
         playerpos=list(playerpos)
         playerpos[1] += grav_velocity
         playerpos[0] -= xchange
         grav_velocity+=0.75
         newpos=playerpos[:]
- #       playerpos=collide(oldpos,newpos,map_grid)
+        playerpos=collide(oldpos,newpos,map_grid)
+    if mode == 'launchingleft':
+        playerpos=list(playerpos)
 
+        playerpos[1] += grav_velocity
+        playerpos[0] += xchange
+        grav_velocity+=0.75
+        newpos=playerpos[:]
+        playerpos=collide(oldpos,newpos,map_grid)
         
     return playerpos,state,grav_velocity,oldpos,last_tp,forced_end
 
@@ -264,6 +282,10 @@ def collide(oldpos,newpos,grid):
     for p in launchPad:
         if p.colliderect(new_rect):
             return oldpos
+        
+    for x in launchPad2:
+        if x.colliderect(new_rect):
+            return oldpos
     return newpos
 
 def jumpBlock(oldpos,newpos):
@@ -275,8 +297,13 @@ def launch(oldpos,newpos):
     new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
     for p in launchPad:
         if p.colliderect(new_rect):
-            return True
+            return 'right'
+        
+    for x in launchPad2:
+        if x.colliderect(new_rect):
+            return 'left'
 
+        
 def facing(x,y):
     if bullet_collide((x+16,y)):
         return 'Left'
