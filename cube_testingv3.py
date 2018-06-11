@@ -146,8 +146,8 @@ Also includes the moving of player concerning portals.'''
     
     if keys[K_d] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
-        prect=Rect(playerpos[0]+25,playerpos[1],25,65)
-        
+        prect=Rect(playerpos[0]+25,playerpos[1],30,65)
+        draw.rect(screen,(0,0,255),prect,5)
         
         crect=Rect(cubepos[0],cubepos[1],1,20)
         
@@ -160,11 +160,11 @@ Also includes the moving of player concerning portals.'''
             playerpos[0]+=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid,pl,pw)
-    ocx,ocy=cubepos[:]
+    
     if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
-        prect=Rect(playerpos[0],playerpos[1],25,65)
-        
+        prect=Rect(playerpos[0],playerpos[1],35,75)
+        draw.rect(screen,(0,0,255),prect,5)
         crect=Rect(cubepos[0]+19,cubepos[1],1,20)
         
         if prect.colliderect(crect):
@@ -323,11 +323,27 @@ def collide(oldpos,newpos,grid,pl,pw):
     global cx,cy
     
     if pl!=20 and pw!=20:
-        new_rect=Rect(newpos[0],newpos[1],pl-10,pw-10)
-        crect=Rect(cx,cy,20,20)
-        if crect.colliderect(new_rect):
-            return oldpos
+        if keys[K_d]:
+            new_rect=Rect(newpos[0]+10,newpos[1],pl-10,pw)
+            draw.rect(screen,(0,255,0),new_rect)
+            crect=Rect(cx,cy,20,20)
+            if crect.colliderect(new_rect):
+                print('wowwwww')
+                return oldpos
+        if keys[K_a]:
+            new_rect=Rect(newpos[0]+10,newpos[1],pl-10,pw)        
+            draw.rect(screen,(0,255,0),new_rect)
+            crect=Rect(cx,cy,20,20)
+            if crect.colliderect(new_rect):
+                return oldpos
+        else:
+            new_rect=Rect(newpos[0]+10,newpos[1],pl-10,pw)        
+            draw.rect(screen,(0,255,0),new_rect)
+            crect=Rect(cx,cy,20,20)
+            if crect.colliderect(new_rect):
+                return oldpos
     new_rect=Rect(newpos[0],newpos[1],pl,pw)
+    
     for wall in wall_rects:
         if wall.colliderect(new_rect):
             floatingmode = False
