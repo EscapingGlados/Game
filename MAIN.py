@@ -65,8 +65,7 @@ hit1 = None
 grav_velocity=0 #the value that will provide constant gravity and will decide how high the player will jump
 xchange = 0
 forced_end = False # [x change, y change, frames left]
-
-
+floatingmode = False
 
 click=0
 portal_delay=time.time()
@@ -112,7 +111,7 @@ def bullet_collideWall(portal):
 def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
-    global mode,xchange
+    global mode,xchange,floatingmode
     playerpos=list(playerpos)
     startpos = playerpos[:]
     
@@ -143,12 +142,13 @@ Also includes the moving of player concerning portals.'''
 
     elif forced_end: #True if something in it
         playerpos[0] += forced_end[0] #adds dx to px
-        playerpos[1] += forced_end[1]+2 #adds dy to py
+        playerpos[1] += forced_end[1]+4 #adds dy to py
         forced_end[2] -= 1 #makes forced push smaller
         
         if forced_end[2] < 0: #ends when nothing left
             forced_end = False
-    
+##            floatingmode = True
+            
         
     newpos=playerpos[:]
     playerpos=collide(oldpos,newpos,map_grid)
@@ -180,8 +180,7 @@ Also includes the moving of player concerning portals.'''
             
             categories = {"Right":True, "Left":True, "Up": False, "Down": False}
             tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
-            def rev_abs(num):
-                return abs(num)*-1
+
             
             playerpos = [playerpos[0] + tele_adjust[0], playerpos[1] + tele_adjust[1]]
             
@@ -202,7 +201,13 @@ Also includes the moving of player concerning portals.'''
                 de_x, de_y = de_y, de_x #Reverse them
                 ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) 
                 forced_end = [ddx, ddy, 10]
-                
+            print(outways,floatingmode)
+            
+##            if floatingmode == True:
+##                if outways == "Right":
+##                    playerpos[0] += 15
+##                elif outways == "Left":
+##                    playerpos[0] -= 15
     newpos=playerpos[:]
     #playerpos=collide(oldpos,newpos,map_grid)
 
@@ -258,29 +263,36 @@ def portal_self_collide(portal1,portal2):
     if p1_rect.colliderect(p2_rect):
         return [False]
 
-
+def rev_abs(num):
+    return abs(num)*-1
 def collide(oldpos,newpos,grid):
     'Checks if the new position is vacant, if not, will return the old position'
+    global floatingmode
     new_rect=Rect(newpos[0],newpos[1],pl,pw)
     
     for wall in wall_rects:
         if wall.colliderect(new_rect):
+            floatingmode = False
             return oldpos
         
     for x in wall2_rects:
         if x.colliderect(new_rect):
+            floatingmode = False
             return oldpos
         
     for b in blockList:
         if b.colliderect(new_rect):
+            floatingmode = False
             return oldpos
 
     for p in launchPad:
         if p.colliderect(new_rect):
+            floatingmode = False
             return oldpos
         
     for x in launchPad2:
         if x.colliderect(new_rect):
+            floatingmode = False
             return oldpos
     return newpos
 
