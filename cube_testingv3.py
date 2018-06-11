@@ -146,7 +146,7 @@ Also includes the moving of player concerning portals.'''
     
     if keys[K_d] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
-        prect=Rect(playerpos[0]+25,playerpos[1],30,65)
+        prect=Rect(playerpos[0]+25,playerpos[1],30,60)
         draw.rect(screen,(0,0,255),prect,5)
         
         crect=Rect(cubepos[0],cubepos[1],1,20)
@@ -163,7 +163,7 @@ Also includes the moving of player concerning portals.'''
     
     if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
-        prect=Rect(playerpos[0],playerpos[1],35,75)
+        prect=Rect(playerpos[0],playerpos[1],35,60)
         draw.rect(screen,(0,0,255),prect,5)
         crect=Rect(cubepos[0]+19,cubepos[1],1,20)
         
