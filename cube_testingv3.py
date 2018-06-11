@@ -4,7 +4,7 @@ import time
 import os
 import pickle
 
-init()
+init()#aeojfga
 
 screen=display.set_mode((800,600))
 running = True

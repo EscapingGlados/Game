@@ -147,7 +147,7 @@ Also includes the moving of player concerning portals.'''
         
         if forced_end[2] < 0: #ends when nothing left
             forced_end = False
-##            floatingmode = True
+            floatingmode = True
             
         
     newpos=playerpos[:]
@@ -203,11 +203,11 @@ Also includes the moving of player concerning portals.'''
                 forced_end = [ddx, ddy, 10]
             print(outways,floatingmode)
             
-##            if floatingmode == True:
-##                if outways == "Right":
-##                    playerpos[0] += 15
-##                elif outways == "Left":
-##                    playerpos[0] -= 15
+            if floatingmode == True:
+                if outways == "Right":
+                    playerpos[0] += 15
+                elif outways == "Left":
+                    playerpos[0] -= 15
     newpos=playerpos[:]
     #playerpos=collide(oldpos,newpos,map_grid)
 
@@ -272,27 +272,22 @@ def collide(oldpos,newpos,grid):
     
     for wall in wall_rects:
         if wall.colliderect(new_rect):
-            floatingmode = False
             return oldpos
         
     for x in wall2_rects:
         if x.colliderect(new_rect):
-            floatingmode = False
             return oldpos
         
     for b in blockList:
         if b.colliderect(new_rect):
-            floatingmode = False
             return oldpos
 
     for p in launchPad:
         if p.colliderect(new_rect):
-            floatingmode = False
             return oldpos
         
     for x in launchPad2:
         if x.colliderect(new_rect):
-            floatingmode = False
             return oldpos
     return newpos
 
