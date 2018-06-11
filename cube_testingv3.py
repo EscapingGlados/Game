@@ -135,33 +135,35 @@ def cubemove(cubepos):
     return cubepos
 
 
-
+ocx,ocy=[cx,cy]
 def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
     global mode,xchange,floatingmode
-    
+    global ocx,ocy
     playerpos=list(playerpos)
     startpos = playerpos[:]
     
     if keys[K_d] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
-        prect=Rect(playerpos[0]+25,playerpos[1],20,60)
+        prect=Rect(playerpos[0]+25,playerpos[1],25,65)
+        
         
         crect=Rect(cubepos[0],cubepos[1],1,20)
         
         if prect.colliderect(crect):
-             og_playerpos=playerpos[:]
-             og_cubepos=cubepos[:]
+            playerpos[0]+=2
+            cubepos[0]+=2
+            
              
         else:
             playerpos[0]+=5
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid,pl,pw)
-
+    ocx,ocy=cubepos[:]
     if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
-        prect=Rect(playerpos[0],playerpos[1],20,60)
+        prect=Rect(playerpos[0],playerpos[1],25,65)
         
         crect=Rect(cubepos[0]+19,cubepos[1],1,20)
         
@@ -318,8 +320,14 @@ def rev_abs(num):
 def collide(oldpos,newpos,grid,pl,pw):
     'Checks if the new position is vacant, if not, will return the old position'
     global floatingmode
-    new_rect=Rect(newpos[0],newpos[1],pl,pw)
+    global cx,cy
     
+    if pl!=20 and pw!=20:
+        new_rect=Rect(newpos[0],newpos[1],pl-10,pw-10)
+        crect=Rect(cx,cy,20,20)
+        if crect.colliderect(new_rect):
+            return oldpos
+    new_rect=Rect(newpos[0],newpos[1],pl,pw)
     for wall in wall_rects:
         if wall.colliderect(new_rect):
             floatingmode = False
