@@ -116,11 +116,12 @@ def cubemove(cubepos):
     global grav_velocity2
     global cube_state
     global opos
+    global holding
     cubepos=list(cubepos)
     npos=cubepos[:]
     cubepos=collide(opos,npos,map_grid,20,20)
     opos=cubepos[:]
-    if cube_state=='falling':
+    if cube_state=='falling' and holding==False:
         cubepos=list(cubepos)
         cubepos[1]+=grav_velocity2
         grav_velocity2+=0.75
@@ -135,23 +136,51 @@ def cubemove(cubepos):
     return cubepos
 
 
+def holding_cube(dist,facing,holding,cubepos,playerpos):
+    
+    if dist<=63:
+        if keys[K_e]:
+            holding=True
+            if facing==0:
+                cubepos[0]=playerpos[0]+43
+                cubepos[1]=playerpos[1]+9
+            if facing==1:
+                cubepos[1]=playerpos[1]+9
+                cubepos[0]=playerpos[0]-13
+            return holding,cubepos
+    return holding,cubepos
+                
+
 ocx,ocy=[cx,cy]
 def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
     global mode,xchange,floatingmode
     global ocx,ocy
+    global direction_face
+    global mx,my
+    global holding
     playerpos=list(playerpos)
     startpos = playerpos[:]
+    holding=False
+    holding,cubepos=holding_cube(hypot((playerpos[0]+6-cubepos[0]),(playerpos[1]-cubepos[1])),direction_face,holding,cubepos,playerpos)
+##    if direction_face==0:
+##        if hypot((playerpos[0]+6-cubepos[0]),(playerpos[1]-cubepos[1]))<=63:
+##            if keys[K_e]:
+##                holding=True
+##                cubepos[1]=playerpos[1]+9
+##                #cubepos[0]=playerpos[0]+45
+    
+    
     
     if keys[K_d] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
-        prect=Rect(playerpos[0]+25,playerpos[1],30,60)
-        draw.rect(screen,(0,0,255),prect,5)
+        prect=Rect(playerpos[0]+28,playerpos[1],11,60)
+        
         
         crect=Rect(cubepos[0],cubepos[1],1,20)
         
-        if prect.colliderect(crect):
+        if prect.colliderect(crect) :
             playerpos[0]+=2
             cubepos[0]+=2
             
@@ -163,8 +192,8 @@ Also includes the moving of player concerning portals.'''
     
     if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
         playerpos=list(playerpos)
-        prect=Rect(playerpos[0],playerpos[1],35,60)
-        draw.rect(screen,(0,0,255),prect,5)
+        prect=Rect(playerpos[0]+10,playerpos[1],15,60)
+        
         crect=Rect(cubepos[0]+19,cubepos[1],1,20)
         
         if prect.colliderect(crect):
@@ -211,7 +240,7 @@ Also includes the moving of player concerning portals.'''
     if bluep[-1] and orangep[-1] and (time.time() - last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
         #switched = False
         outways = None
-        
+        print(hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]))
         if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 60:
             playerpos = orangep[0]
             switched= True
@@ -324,26 +353,24 @@ def collide(oldpos,newpos,grid,pl,pw):
     
     if pl!=20 and pw!=20:
         if keys[K_d]:
-            new_rect=Rect(newpos[0]+10,newpos[1],pl-10,pw)
-            draw.rect(screen,(0,255,0),new_rect)
+            new_rect=Rect(newpos[0]+14,newpos[1],pl-29,pw)  
             crect=Rect(cx,cy,20,20)
             if crect.colliderect(new_rect):
-                print('wowwwww')
                 return oldpos
         if keys[K_a]:
-            new_rect=Rect(newpos[0]+10,newpos[1],pl-10,pw)        
-            draw.rect(screen,(0,255,0),new_rect)
+            new_rect=Rect(newpos[0]+14,newpos[1],pl-29,pw)      
+            
             crect=Rect(cx,cy,20,20)
             if crect.colliderect(new_rect):
                 return oldpos
         else:
-            new_rect=Rect(newpos[0]+10,newpos[1],pl-10,pw)        
-            draw.rect(screen,(0,255,0),new_rect)
+            new_rect=Rect(newpos[0]+14,newpos[1],pl-29,pw)        
             crect=Rect(cx,cy,20,20)
             if crect.colliderect(new_rect):
                 return oldpos
     new_rect=Rect(newpos[0],newpos[1],pl,pw)
-    
+    if pl!=20 and pw!=20:
+        new_rect=Rect(newpos[0]+28,newpos[1],11,60)
     for wall in wall_rects:
         if wall.colliderect(new_rect):
             floatingmode = False
