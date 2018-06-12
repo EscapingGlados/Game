@@ -156,7 +156,6 @@ def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
     global mode,xchange,floatingmode
-    global ocx,ocy
     global direction_face
     global mx,my
     global holding
