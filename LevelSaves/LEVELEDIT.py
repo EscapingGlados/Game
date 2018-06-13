@@ -25,42 +25,24 @@ def loadMap(fname):
         return [[0]*60 for x in range(80)]
     
 def saveMap(level, fname):
-<<<<<<< HEAD:LEVELEDIT.py
-
-    myPFile = open("tut3.p", "wb")
-    myPFile = open("level1.p", "wb")
-
-=======
     myPFile = open(fname, "wb")
->>>>>>> 7dea36bd7d2e17d5b5153214dbe597cf755913f5:LevelSaves/LEVELEDIT.py
     pickle.dump(level, myPFile)
 
 screen = display.set_mode((800,600))
 col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(0,0,0)]#nothing,can portal,cant portal,jump pad, launch pad right, launch pad left 
 current = 1
-<<<<<<< HEAD:LEVELEDIT.py
-
-=======
->>>>>>> 7dea36bd7d2e17d5b5153214dbe597cf755913f5:LevelSaves/LEVELEDIT.py
 back = image.load("background.bmp")
 level = loadMap("nigs.p")
 colz = (255,0,0)
 buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False]]
 
-agency = font.SysFont("Times New Roman",40)
+upheav = font.Font("upheavtt.ttf",40)
 
-<<<<<<< HEAD:LEVELEDIT.py
-
-back = image.load("checking_level1.png")
-level = loadMap("level1.p")
-
-=======
 name = ""
->>>>>>> 7dea36bd7d2e17d5b5153214dbe597cf755913f5:LevelSaves/LEVELEDIT.py
 running = True
 
 def text(msg,x,y):
-    words = agency.render(msg, True,(0,255,255))
+    words = upheav.render(msg, True,(0,255,255))
     screen.blit(words,(x,y))
 while running:
     click = False
