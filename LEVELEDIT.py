@@ -25,27 +25,26 @@ def loadMap(fname):
         return [[0]*60 for x in range(80)]
     
 def saveMap(level, fname):
-<<<<<<< HEAD
+
     myPFile = open("tut3.p", "wb")
-=======
     myPFile = open("level1.p", "wb")
->>>>>>> 767717ce2218e668dd39ea5606653ba00775e441
+
     pickle.dump(level, myPFile)
 
 screen = display.set_mode((800,600))
 col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(0,0,0)]#nothing,can portal,cant portal,jump pad, launch pad right, launch pad left 
 current = 1
-<<<<<<< HEAD
+
 back = image.load("background.bmp")
 level = loadMap("tut3.p")
 colz = (255,0,0)
 buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False]]
 
 
-=======
+
 back = image.load("checking_level1.png")
 level = loadMap("level1.p")
->>>>>>> 767717ce2218e668dd39ea5606653ba00775e441
+
 running = True
 
 while running:

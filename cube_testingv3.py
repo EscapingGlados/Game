@@ -155,23 +155,26 @@ def cubemove(cubepos):
             cube_state='idle'
 
 
-##        cubepos=collide(opos,npos,map_grid,20,20)
-##    switched = False
-##    if bluep[-1] and orangep[-1] and (t.time() - last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
-##        #switched = False
-##        outways = None
+        cubepos=collide(opos,npos,map_grid,20,20)
+    opos = cubepos[:]
+    cube_begin_pos = cubepos[:]
+    c_plr_x,c_plr_y = cubepos
+    cube_switched = False
+    if bluep[-1] and orangep[-1] and (t.time() - cube_last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
+        #switched = False
+        cube_outways = None
 ##        
-##        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 45:
-##            cubepos = orangep[0]
-##            switched= True
-##            outways = orangep[-1] #direction it is facing
+        if hypot(c_plr_x+25-bluep[0][0], c_plr_y+25-bluep[0][1]) < 45:
+            cubepos = orangep[0]
+            cube_switched= True
+            cube_outways = orangep[-1] #direction it is facing
 ##            
-##        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 45:
-##            playerpos = bluep[0]
-##            switched= True
-##            outways = bluep[-1]
+        elif hypot(c_plr_x+25-orangep[0][0], c_plr_y+25-orangep[0][1]) < 45:
+            cubepos = bluep[0]
+            cube_switched= True
+            cube_outways = bluep[-1]
 ##        
-##        if switched:
+        if cube_switched:
 ##            last_tp = t.time()
 ##            de_x = begin_pos[0]- startpos[0]
 ##            de_y = begin_pos[1] - startpos[1]
