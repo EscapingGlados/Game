@@ -11,7 +11,7 @@ running = True
 
 brick = transform.scale(image.load('surface2.bmp'),(10,10))
 block = transform.scale(image.load('block.png'),(10,10))
-backg=image.load('background.bmp')
+backg=image.load('checking_level1.png')
 cube=transform.scale(image.load('comp_cube.png'),(20,20))
 def loadMap(fname):
     if fname in os.listdir("."):
@@ -25,6 +25,7 @@ wall2_rects = []
 blockList = []
 launchPad = []#right shooting
 launchPad2 = []#left shooting
+shield = []#blue shields
 
 for x in range(80):
     for y in range(60):
@@ -39,6 +40,9 @@ for x in range(80):
             launchPad.append(Rect((x*10,y*10,10,10)))#launchpadright
         if c == 5:
             launchPad2.append(Rect((x*10,y*10,10,10)))#launchpadleft
+        if c == 6:
+            shield.append(Rect((x*10,y*10,10,10)))
+            
             
 def drawback(screen):
     'Draws the bricks/platforms of the level'
@@ -52,6 +56,8 @@ def drawback(screen):
         draw.rect(screen,(65,65,65),(p[0],p[1],10,10))
     for x in launchPad2:
         draw.rect(screen,(0,0,255),(x[0],x[1],10,10))
+    for s in shield:
+        draw.rect(screen,(0,255,255),(s[0],s[1],10,10))        
 
 portal_state='idle'
 state='idle'
@@ -74,6 +80,7 @@ o_collide=False
 bluep=[None]
 orangep=[None]
 screen_p=[]
+changing = 0
 
 last_tp = time.time()
 
@@ -86,6 +93,7 @@ frame=0
 frame2=0
 direction_face=0
 cx,cy=300,450
+face = None
 for i in range(2,26):
     forward.append(transform.scale(image.load(str(i+1)+".png"),(50,70)))
 for i in range(2,26):
@@ -108,10 +116,26 @@ def bullet_collideWall(portal):
                 return True
                 break
     return False
+
+def shieldCollide(portal):
+    if portal != [False]:
+        posRect = Rect(portal[0]-8,portal[1]-8,16,16)
+        for p in shield:
+            if p.colliderect(posRect):
+                return True
+                break
+    return False
+def playerCol(pos):
+    posRect = Rect(pos[0],pos[1],pl,pw)
+    for s in shield:
+        if s.colliderect(posRect):
+            return True
+            break
+    return False
 def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
-    global mode,xchange,floatingmode
+    global mode,xchange,floatingmode,face,changing
     playerpos=list(playerpos)
     startpos = playerpos[:]
     
@@ -142,13 +166,17 @@ Also includes the moving of player concerning portals.'''
 
     elif forced_end: #True if something in it
         playerpos[0] += forced_end[0] #adds dx to px
-        playerpos[1] += forced_end[1]+4 #adds dy to py
+        playerpos[1] += forced_end[1] #adds dy to py
         forced_end[2] -= 1 #makes forced push smaller
         
         if forced_end[2] < 0: #ends when nothing left
             forced_end = False
             floatingmode = True
-            
+    if floatingmode == True and abs(changing) > 5:
+        if face == "Right":
+            playerpos[0] += 7
+        elif face == "Left":
+            playerpos[0] -= 7          
         
     newpos=playerpos[:]
     playerpos=collide(oldpos,newpos,map_grid)
@@ -179,7 +207,7 @@ Also includes the moving of player concerning portals.'''
             de_y = begin_pos[1] - startpos[1]
             
             categories = {"Right":True, "Left":True, "Up": False, "Down": False}
-            tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
+            tele_adjust = {"Right": [25,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
 
             
             playerpos = [playerpos[0] + tele_adjust[0], playerpos[1] + tele_adjust[1]]
@@ -193,21 +221,29 @@ Also includes the moving of player concerning portals.'''
 
                     ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) #if on same wall got to make it push 180 the other portal
                     forced_end = [ddx, ddy, 10]
+                    if ddx != 0:
+                        changing = ddx
+                    elif ddx == 0:
+                        forced_end[0] = 2
 
                 else: #Opposite direction, keep it identical
                     forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
-                    
+                    if de_x != 0:
+                        changing = de_x
+                    elif de_x == 0:
+                        forced_end[0] = -3#fixes bug where if player is still and teleports it would glitch out
+
             else: #Changing both components
                 de_x, de_y = de_y, de_x #Reverse them
                 ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) 
                 forced_end = [ddx, ddy, 10]
-            print(outways,floatingmode)
+                if ddx != 0:
+                    changing = ddx
+
+            if outways != None:
+                face = outways
             
-            if floatingmode == True:
-                if outways == "Right":
-                    playerpos[0] += 15
-                elif outways == "Left":
-                    playerpos[0] -= 15
+
     newpos=playerpos[:]
     #playerpos=collide(oldpos,newpos,map_grid)
 
@@ -272,22 +308,31 @@ def collide(oldpos,newpos,grid):
     
     for wall in wall_rects:
         if wall.colliderect(new_rect):
+            floatingmode = False
             return oldpos
         
     for x in wall2_rects:
         if x.colliderect(new_rect):
+            floatingmode = False
+
             return oldpos
         
     for b in blockList:
         if b.colliderect(new_rect):
+            floatingmode = False
+
             return oldpos
 
     for p in launchPad:
         if p.colliderect(new_rect):
+            floatingmode = False
+
             return oldpos
         
     for x in launchPad2:
         if x.colliderect(new_rect):
+            floatingmode = False
+
             return oldpos
     return newpos
 
@@ -297,7 +342,7 @@ def jumpBlock(oldpos,newpos):
         if b.colliderect(new_rect):
             return True
 def launch(oldpos,newpos):
-    new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
+    new_rect = Rect(newpos[0],newpos[1]+2,pl,pw)
     for p in launchPad:
         if p.colliderect(new_rect):
             return 'right'
@@ -341,10 +386,12 @@ def shooting(bullet, col):
                     break
         if bullet_collideWall([x_pos,y_pos]):
             portal = [None]
+        if shieldCollide([x_pos,y_pos]):
+            portal = [None]
             
         if portal != [None]:
             draw.circle(screen,col,(x_pos,y_pos),8)
-            portal[-2] += 50
+            portal[-2] += 50#adding to distance
         
     return portal
 
@@ -399,7 +446,9 @@ while running:
         if portal_self_collide(bluep[0],orangep[0]):
             bluep=[None]
             orangep=[None]
-    
+        if shieldCollide((px,py)):
+            bluep=[None]
+            orangep=[None]           
 #----DRAWING---------------------------------
     if  keys[K_d] and not keys[K_a]:
         screen.blit(forward[frame%24],(px,py))
