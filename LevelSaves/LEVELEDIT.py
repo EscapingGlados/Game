@@ -3,12 +3,12 @@ from pygame import *
 import os
 import pickle
 from pprint import *
-import tkinter 
+
 showing = True
-saving = Rect(750,550,50,50)
-root = tkinter.Tk()
-root.withdraw()
-root.attributes("-topmost", True)#makes sure tk windows are priority, they would otherwise go to the back
+typing = False
+font.init()
+rekt = Rect(750,550,50,50)
+
 def drawAll(screen,output,image):
     screen.blit(image,(0,0))
     for x in range(80):
@@ -25,28 +25,43 @@ def loadMap(fname):
         return [[0]*60 for x in range(80)]
     
 def saveMap(level, fname):
+<<<<<<< HEAD:LEVELEDIT.py
 
     myPFile = open("tut3.p", "wb")
     myPFile = open("level1.p", "wb")
 
+=======
+    myPFile = open(fname, "wb")
+>>>>>>> 7dea36bd7d2e17d5b5153214dbe597cf755913f5:LevelSaves/LEVELEDIT.py
     pickle.dump(level, myPFile)
 
 screen = display.set_mode((800,600))
 col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(0,0,0)]#nothing,can portal,cant portal,jump pad, launch pad right, launch pad left 
 current = 1
+<<<<<<< HEAD:LEVELEDIT.py
 
+=======
+>>>>>>> 7dea36bd7d2e17d5b5153214dbe597cf755913f5:LevelSaves/LEVELEDIT.py
 back = image.load("background.bmp")
-level = loadMap("tut3.p")
+level = loadMap("nigs.p")
 colz = (255,0,0)
 buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False]]
 
+agency = font.SysFont("Times New Roman",40)
 
+<<<<<<< HEAD:LEVELEDIT.py
 
 back = image.load("checking_level1.png")
 level = loadMap("level1.p")
 
+=======
+name = ""
+>>>>>>> 7dea36bd7d2e17d5b5153214dbe597cf755913f5:LevelSaves/LEVELEDIT.py
 running = True
 
+def text(msg,x,y):
+    words = agency.render(msg, True,(0,255,255))
+    screen.blit(words,(x,y))
 while running:
     click = False
     for e in event.get():                
@@ -56,7 +71,17 @@ while running:
         if e.type == MOUSEBUTTONDOWN:
             if e.button == 1:
                 click = True
-    
+        if e.type == KEYDOWN:
+            keys = key.get_pressed()
+            if typing == True and e.key < 256:
+                if keys[K_BACKSPACE]:
+                    name = name[:-1]
+                elif keys[K_RETURN]:
+                    saveMap(level, str(name))
+                    typing = False
+                else:
+                    name += e.unicode
+                    
     mx, my = mouse.get_pos()
     keys = key.get_pressed()                
     for i in range(8):
@@ -65,11 +90,15 @@ while running:
                 pass
             else:
                 current = i
-    if click and saving.collidepoint((mx,my)):
-        name = tkinter.filedialog.asksaveasfilename(filetypes = [("Pickle", "*.p*")])
-        saveMap(level, str(name))
+                
+    if click and rekt.collidepoint((mx,my)):
+        typing = True
+
+        
     if keys[K_ESCAPE] and showing == True:
         showing = False
+
+    
     elif keys[K_ESCAPE] and showing == False:
         showing = True
         
@@ -87,7 +116,8 @@ while running:
         level[gx][gy] = 0
         
     drawAll(screen, level, back)
-    
+    if typing == True:
+        text(name,0,0)
     buttons[current-1][1] = True
     
     for i in range(6):
@@ -100,9 +130,8 @@ while running:
             colz = (0,255,0)
         if showing == True:
             draw.rect(screen,(colz),(buttons[i][0],50,50,50),3)
-    draw.rect(screen,(0,0,255),saving)
+    draw.rect(screen,(0,0,255),rekt)
     display.flip()
 
     
 quit()
-saveMap(level, "level1.p")
