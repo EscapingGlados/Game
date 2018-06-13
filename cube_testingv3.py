@@ -19,13 +19,14 @@ def loadMap(fname):
         return pickle.load(myPFile)       
     else:
         return [[0]*60 for x in range(80)]
+    
 map_grid = loadMap("level1.p")
 wall_rects=[]
 wall2_rects = []
 blockList = []
 launchPad = []#right shooting
 launchPad2 = []#left shooting
-
+backg=image.load('checking_level1.png')
 for x in range(80):
     for y in range(60):
         c = map_grid[x][y]
@@ -42,10 +43,7 @@ for x in range(80):
             
 def drawback(screen):
     'Draws the bricks/platforms of the level'
-    for w in wall_rects:
-        screen.blit(brick,(w[0],w[1]))
-    for l in wall2_rects:
-        screen.blit(block,(l[0],l[1]))
+    screen.blit(backg,(0,0))
     for b in blockList:
         draw.rect(screen,(255,0,0),(b[0],b[1],10,10))
     for p in launchPad:
@@ -157,32 +155,99 @@ def cubemove(cubepos):
             cube_state='idle'
 
 
-    if launch(opos,npos) == 'right':
-        grav_velocity2 = -20
-        cube_xchange = -20
-        cube_mode = 'launchingright'
-        
-    if launch(opos,npos) == 'left':
-        grav_velocity2 = -20
-        cube_xchange = -20
-        cube_mode = 'launchingleft'
-        
-    if cube_mode =='launchingright': #if nothing in forced_end
-        cubepos=list(cubepos)
-        cubepos[1] += grav_velocity2
-        cubepos[0] -= cube_xchange
-        grav_velocity2+=0.75
-        npos=cubepos[:]
-        cubepos=collide(opos,npos,map_grid,20,20)
+##        cubepos=collide(opos,npos,map_grid,20,20)
+##    switched = False
+##    if bluep[-1] and orangep[-1] and (t.time() - last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
+##        #switched = False
+##        outways = None
+##        
+##        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 45:
+##            cubepos = orangep[0]
+##            switched= True
+##            outways = orangep[-1] #direction it is facing
+##            
+##        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 45:
+##            playerpos = bluep[0]
+##            switched= True
+##            outways = bluep[-1]
+##        
+##        if switched:
+##            last_tp = t.time()
+##            de_x = begin_pos[0]- startpos[0]
+##            de_y = begin_pos[1] - startpos[1]
+##            
+##            categories = {"Right":True, "Left":True, "Up": False, "Down": False}
+##            tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
+##
+##            
+##            playerpos = [playerpos[0] + tele_adjust[0], playerpos[1] + tele_adjust[1]]
+##            
+##            quadrant_adjust = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]}[outways] #adjusts where to teleport in quadrants
+##
+##            if categories[bluep[-1]] == categories[orangep[-1]]: #Just changing one component
+##                
+##
+##                if bluep[-1] == orangep[-1]: #Same one, inverse that component
+##
+##                    ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) #if on same wall got to make it push 180 the other portal
+##                    forced_end = [ddx, ddy, 10]
+##
+##                else: #Opposite direction, keep it identical
+##                    forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
+##                    
+##            else: #Changing both components
+##                de_x, de_y = de_y, de_x #Reverse them
+##                ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) 
+##                forced_end = [ddx, ddy, 10]
+##            
+##            
+####            if floatingmode == True:
+####                if outways == "Right":
+####                    playerpos[0] += 15
+####                elif outways == "Left":
+####                    playerpos[0] -= 15
+##    newpos=playerpos[:]
+##    #playerpos=collide(oldpos,newpos,map_grid)
+##
+##    if not switched and collide(oldpos,[oldpos[0],oldpos[1]+1],map_grid,pl,pw)==[oldpos[0],oldpos[1]+1] and state!='jump': #is gravity when player isn't jumping//checks if a pixel beneath is vacant or not
+##        state=state_change(state,True,keys[K_d],keys[K_a])
+##        grav_velocity=0
+##    if keys[K_w] and state!='jump':
+##        state=state_change(state,True,keys[K_d],keys[K_a])
+##        grav_velocity=-8 #a negative gravity makes it go up
+##        
+##    if jumpBlock(oldpos,newpos,pl,pw) and keys[K_w]:
+##        state=state_change(state,True,keys[K_d],keys[K_a])
+##        grav_velocity=-20 #a negative gravity makes it go up
+##        
+##    if launch(oldpos,newpos) == 'right':
+##        grav_velocity = -20
+##        xchange = -20
+##        mode = 'launchingright'
+##        
+##    if launch(oldpos,newpos) == 'left':
+##        grav_velocity = -20
+##        xchange = -20
+##        mode = 'launchingleft'
+##        
+##    if mode =='launchingright': #if nothing in forced_end
+##        playerpos=list(playerpos)
+##        playerpos[1] += grav_velocity
+##        playerpos[0] -= xchange
+##        grav_velocity+=0.75
+##        newpos=playerpos[:]
+##        playerpos=collide(oldpos,newpos,map_grid,pl,pw)
 ##        
 ##    if mode == 'launchingleft':
-##        cubepos=list(cubepos)
-##        cubepos[1] += grav_velocity2
-##        cubepos[0] += cube_xchange
-##        grav_velocity2+=0.75
-##        npos=cubepos[:]
-##        cubepos=collide(opos,npos,map_grid,20,20)
-    
+##        playerpos=list(playerpos)
+##        playerpos[1] += grav_velocity
+##        playerpos[0] += xchange
+##        grav_velocity+=0.75
+##        newpos=playerpos[:]
+##        playerpos=collide(oldpos,newpos,map_grid,pl,pw)
+##        
+##    return playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos
+##    
     return cubepos
 
 
@@ -538,6 +603,7 @@ while running:
             direction_face=1
 
     screen.blit(backg,(0,0))
+    
     drawback(screen)
     
 
@@ -582,10 +648,9 @@ while running:
     if orangep[-1] != None and hit1:
         draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],8)
     cx,cy=cubemove((cx,cy))
-    draw.rect(screen,(255,0,0),(cx,cy,20,20))
+    
     screen.blit(cube,(cx,cy))
-    for wall in wall_rects:
-        draw.rect(screen,(255,0,0),wall)
+    
     frame+=1
     oldpos=[px,py]
     display.flip()

@@ -17,6 +17,9 @@ def menu():
     running = True
     myClock = time.Clock()
     rects=[(400,(y+5)*55) for y in range(4)]
+    texts=[]
+    for i in range(4):
+        texts.append(image.load('B%s.png'%(i+1)))
     
            
     while running:
@@ -31,11 +34,12 @@ def menu():
         screen.blit(door,(750,455))
         screen.blit(glados,(55,0-motion))
         screen.blit(sprint[int(frame)%22],(400,500))
-        for pos in rects:
-            if (Rect(pos[0],pos[1],208,53)).collidepoint(mpos):
-                screen.blit(click_button,pos)
+        for pos in range(len(rects)):
+            if (Rect(rects[pos][0],rects[pos][1],208,53)).collidepoint(mpos):
+                screen.blit(click_button,rects[pos])
             else:
-                screen.blit(button,pos)
+                screen.blit(button,rects[pos])
+            screen.blit(texts[pos],rects[pos])
         frame+=0.7
         if switch:
             motion+=1
