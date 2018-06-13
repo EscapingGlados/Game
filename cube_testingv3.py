@@ -111,13 +111,12 @@ grav_velocity2=0
 cube_state='idle'
 cx,cy=280,240
 opos=cx,cy
-def cubemove(cubepos):
+def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end):
     global cube_mode,cube_xchange,cube_floatingmode
-    global grav_velocity2
-    global cube_state
-    global opos
+    
     global holding
     cubepos=list(cubepos)
+    cube_startpos = cubepos[:]
     npos=cubepos[:]
     cubepos=collide(opos,npos,map_grid,20,20)
     opos=cubepos[:]
@@ -175,33 +174,33 @@ def cubemove(cubepos):
             cube_outways = bluep[-1]
 ##        
         if cube_switched:
-##            last_tp = t.time()
-##            de_x = begin_pos[0]- startpos[0]
-##            de_y = begin_pos[1] - startpos[1]
+            cube_last_tp = t.time()
+            c_de_x = begin_pos[0]- cube_startpos[0]
+            c_de_y = begin_pos[1] - cube_startpos[1]
 ##            
-##            categories = {"Right":True, "Left":True, "Up": False, "Down": False}
-##            tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
+            cube_categories = {"Right":True, "Left":True, "Up": False, "Down": False}
+            c_tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[cube_outways]
 ##
 ##            
-##            playerpos = [playerpos[0] + tele_adjust[0], playerpos[1] + tele_adjust[1]]
+            cubepos = [cubepos[0] + c_tele_adjust[0], cubepos[1] + c_tele_adjust[1]]
 ##            
-##            quadrant_adjust = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]}[outways] #adjusts where to teleport in quadrants
+            c_quadrant_adjust = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]}[cube_outways] #adjusts where to teleport in quadrants
 ##
-##            if categories[bluep[-1]] == categories[orangep[-1]]: #Just changing one component
+            if cube_categories[bluep[-1]] == cube_categories[orangep[-1]]: #Just changing one component
 ##                
 ##
-##                if bluep[-1] == orangep[-1]: #Same one, inverse that component
+                if bluep[-1] == orangep[-1]: #Same one, inverse that component
 ##
-##                    ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) #if on same wall got to make it push 180 the other portal
-##                    forced_end = [ddx, ddy, 10]
+                    c_ddx, c_ddy = c_quadrant_adjust[0](c_de_x), c_quadrant_adjust[1](c_de_y) #if on same wall got to make it push 180 the other portal
+                    cube_forced_end = [ddx, ddy, 10]
 ##
-##                else: #Opposite direction, keep it identical
-##                    forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
+                else: #Opposite direction, keep it identical
+                    cube_forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
 ##                    
-##            else: #Changing both components
-##                de_x, de_y = de_y, de_x #Reverse them
-##                ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) 
-##                forced_end = [ddx, ddy, 10]
+            else: #Changing both components
+                c_de_x, c_de_y = c_de_y, c_de_x #Reverse them
+                c_ddx, c_ddy = c_quadrant_adjust[0](c_de_x), c_quadrant_adjust[1](c_de_y) 
+                cube_forced_end = [ddx, ddy, 10]
 ##            
 ##            
 ####            if floatingmode == True:
@@ -209,49 +208,43 @@ def cubemove(cubepos):
 ####                    playerpos[0] += 15
 ####                elif outways == "Left":
 ####                    playerpos[0] -= 15
-##    newpos=playerpos[:]
+    npos=cubepos[:]
 ##    #playerpos=collide(oldpos,newpos,map_grid)
 ##
-##    if not switched and collide(oldpos,[oldpos[0],oldpos[1]+1],map_grid,pl,pw)==[oldpos[0],oldpos[1]+1] and state!='jump': #is gravity when player isn't jumping//checks if a pixel beneath is vacant or not
-##        state=state_change(state,True,keys[K_d],keys[K_a])
-##        grav_velocity=0
-##    if keys[K_w] and state!='jump':
-##        state=state_change(state,True,keys[K_d],keys[K_a])
-##        grav_velocity=-8 #a negative gravity makes it go up
+
+    if jumpBlock(opos,npos,20,20):
+        cube_state=state_change(state,True,keys[K_d],keys[K_a])
+        grav_velocity2=-20 #a negative gravity makes it go up
 ##        
-##    if jumpBlock(oldpos,newpos,pl,pw) and keys[K_w]:
-##        state=state_change(state,True,keys[K_d],keys[K_a])
-##        grav_velocity=-20 #a negative gravity makes it go up
+    if launch(opos,npos) == 'right':
+        grav_velocity2 = -20
+        c_xchange = -20
+        cube_mode = 'launchingright'
 ##        
-##    if launch(oldpos,newpos) == 'right':
-##        grav_velocity = -20
-##        xchange = -20
-##        mode = 'launchingright'
+    if launch(opos,npos) == 'left':
+        grav_velocity2 = -20
+        c_xchange = -20
+        cube_mode = 'launchingleft'
 ##        
-##    if launch(oldpos,newpos) == 'left':
-##        grav_velocity = -20
-##        xchange = -20
-##        mode = 'launchingleft'
+    if cube_mode =='launchingright': #if nothing in forced_end
+        cubepos=list(cubepos)
+        cubepos[1] += grav_velocity2
+        cubepos[0] -= c_xchange
+        grav_velocity2+=0.75
+        npos=cubepos[:]
+        cubepos=collide(opos,npos,map_grid,20,20)
 ##        
-##    if mode =='launchingright': #if nothing in forced_end
-##        playerpos=list(playerpos)
-##        playerpos[1] += grav_velocity
-##        playerpos[0] -= xchange
-##        grav_velocity+=0.75
-##        newpos=playerpos[:]
-##        playerpos=collide(oldpos,newpos,map_grid,pl,pw)
+    if cube_mode == 'launchingleft':
+        cubepos=list(cubepos)
+        cubepos[1] += grav_velocity2
+        cubepos[0] += c_xchange
+        grav_velocity2+=0.75
+        npos=cubepos[:]
+        cubepos=collide(opos,npos,map_grid,20,20)
 ##        
-##    if mode == 'launchingleft':
-##        playerpos=list(playerpos)
-##        playerpos[1] += grav_velocity
-##        playerpos[0] += xchange
-##        grav_velocity+=0.75
-##        newpos=playerpos[:]
-##        playerpos=collide(oldpos,newpos,map_grid,pl,pw)
-##        
-##    return playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos
+    return cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end
 ##    
-    return cubepos
+    
 
 
 def holding_cube(dist,facing,holding,cubepos,playerpos):
@@ -274,7 +267,7 @@ def holding_cube(dist,facing,holding,cubepos,playerpos):
                 
 
 ocx,ocy=[cx,cy]
-def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos,permissions):
+def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
     global mode,xchange,floatingmode
