@@ -3,8 +3,12 @@ from pygame import *
 import os
 import pickle
 from pprint import *
-
-
+import tkinter 
+showing = True
+saving = Rect(750,550,50,50)
+root = tkinter.Tk()
+root.withdraw()
+root.attributes("-topmost", True)#makes sure tk windows are priority, they would otherwise go to the back
 def drawAll(screen,output,image):
     screen.blit(image,(0,0))
     for x in range(80):
@@ -21,32 +25,52 @@ def loadMap(fname):
         return [[0]*60 for x in range(80)]
     
 def saveMap(level, fname):
-    myPFile = open("tut1.p", "wb")
+    myPFile = open("tut3.p", "wb")
     pickle.dump(level, myPFile)
 
 screen = display.set_mode((800,600))
-col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(0,0,0)]#nothing,can portal,cant portal,jump pad, launch pad left, launch pad right 
+col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(0,0,0)]#nothing,can portal,cant portal,jump pad, launch pad right, launch pad left 
 current = 1
 back = image.load("background.bmp")
-level = loadMap("tut1.p")
+level = loadMap("tut3.p")
+colz = (255,0,0)
+buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False]]
+
+
 running = True
 
 while running:
+    click = False
     for e in event.get():                
         if e.type == QUIT:
             running = False
-            
+
+        if e.type == MOUSEBUTTONDOWN:
+            if e.button == 1:
+                click = True
+    
+    mx, my = mouse.get_pos()
     keys = key.get_pressed()                
     for i in range(8):
         if keys[i+48]:
-            current = i
+            if i < 1 or i > 6:
+                pass
+            else:
+                current = i
+    if click and saving.collidepoint((mx,my)):
+        name = tkinter.filedialog.asksaveasfilename(filetypes = [("Pickle", "*.p*")])
+        saveMap(level, str(name))
+    if keys[K_ESCAPE] and showing == True:
+        showing = False
+    elif keys[K_ESCAPE] and showing == False:
+        showing = True
         
     if mouse.get_pressed()[0]:
-        mx, my = mouse.get_pos()
         gx = mx // 10
         gy = my // 10
         level[gx][gy] = current
         draw.rect(screen, col[level[gx][gy]], (gx*10, gy*10, 10, 10))
+        
         
     if mouse.get_pressed()[2]:
         mx, my = mouse.get_pos()
@@ -55,6 +79,20 @@ while running:
         level[gx][gy] = 0
         
     drawAll(screen, level, back)
+    
+    buttons[current-1][1] = True
+    
+    for i in range(6):
+        if buttons[i] != buttons[current-1]:
+            buttons[i][1] = False
+        if buttons[i][1] == False:
+            colz = (255,0,0)
+            
+        if buttons[i][1] == True:
+            colz = (0,255,0)
+        if showing == True:
+            draw.rect(screen,(colz),(buttons[i][0],50,50,50),3)
+    draw.rect(screen,(0,0,255),saving)
     display.flip()
 
     

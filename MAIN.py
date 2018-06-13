@@ -11,7 +11,7 @@ running = True
 
 brick = transform.scale(image.load('surface2.bmp'),(10,10))
 block = transform.scale(image.load('block.png'),(10,10))
-backg=image.load('checking_level1.png')
+backg=image.load('background.bmp')
 cube=transform.scale(image.load('comp_cube.png'),(20,20))
 def loadMap(fname):
     if fname in os.listdir("."):
@@ -19,7 +19,7 @@ def loadMap(fname):
         return pickle.load(myPFile)       
     else:
         return [[0]*60 for x in range(80)]
-map_grid = loadMap("level1.p")
+map_grid = loadMap("tut3.p")
 wall_rects=[]
 wall2_rects = []
 blockList = []
@@ -172,11 +172,11 @@ Also includes the moving of player concerning portals.'''
         if forced_end[2] < 0: #ends when nothing left
             forced_end = False
             floatingmode = True
-    if floatingmode == True and abs(changing) > 5:
+    if floatingmode == True:
         if face == "Right":
-            playerpos[0] += 7
+            playerpos[0] += 15
         elif face == "Left":
-            playerpos[0] -= 7          
+            playerpos[0] -= 15         
         
     newpos=playerpos[:]
     playerpos=collide(oldpos,newpos,map_grid)
@@ -191,12 +191,12 @@ Also includes the moving of player concerning portals.'''
         #switched = False
         outways = None
         
-        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 60:
+        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 49:
             playerpos = orangep[0]
             switched= True
             outways = orangep[-1] #direction it is facing
             
-        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 60:
+        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 49:
             playerpos = bluep[0]
             switched= True
             outways = bluep[-1]
@@ -207,7 +207,7 @@ Also includes the moving of player concerning portals.'''
             de_y = begin_pos[1] - startpos[1]
             
             categories = {"Right":True, "Left":True, "Up": False, "Down": False}
-            tele_adjust = {"Right": [25,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
+            tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[outways]
 
             
             playerpos = [playerpos[0] + tele_adjust[0], playerpos[1] + tele_adjust[1]]
@@ -221,24 +221,16 @@ Also includes the moving of player concerning portals.'''
 
                     ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) #if on same wall got to make it push 180 the other portal
                     forced_end = [ddx, ddy, 10]
-                    if ddx != 0:
-                        changing = ddx
-                    elif ddx == 0:
-                        forced_end[0] = 2
+
 
                 else: #Opposite direction, keep it identical
                     forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
-                    if de_x != 0:
-                        changing = de_x
-                    elif de_x == 0:
-                        forced_end[0] = -3#fixes bug where if player is still and teleports it would glitch out
 
             else: #Changing both components
                 de_x, de_y = de_y, de_x #Reverse them
                 ddx, ddy = quadrant_adjust[0](de_x), quadrant_adjust[1](de_y) 
                 forced_end = [ddx, ddy, 10]
-                if ddx != 0:
-                    changing = ddx
+
 
             if outways != None:
                 face = outways
@@ -394,7 +386,12 @@ def shooting(bullet, col):
             portal[-2] += 50#adding to distance
         
     return portal
-
+def game():
+    pass
+def tutorial():
+    pass
+def levelEdit():
+    pass
 oldpos=[px,py]
 while running:
     b_click=False
