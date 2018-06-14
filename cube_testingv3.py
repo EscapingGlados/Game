@@ -110,9 +110,14 @@ def bullet_collideWall(portal):
 grav_velocity2=0
 cube_state='idle'
 cx,cy=280,240
-opos=cx,cy
+opos=[cx,cy]
+cube_last_tp=t.time()
+cube_forced_end=False
+cube_mode='idle'
+c_xchange=0
+cube_floatingmode=False
 def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end):
-    global cube_mode,cube_xchange,cube_floatingmode
+    global cube_mode,c_xchange,cube_floatingmode
     
     global holding
     cubepos=list(cubepos)
@@ -216,12 +221,12 @@ def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end
         cube_state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity2=-20 #a negative gravity makes it go up
 ##        
-    if launch(opos,npos) == 'right':
+    if launch(opos,npos,20,20) == 'right':
         grav_velocity2 = -20
         c_xchange = -20
         cube_mode = 'launchingright'
 ##        
-    if launch(opos,npos) == 'left':
+    if launch(opos,npos,20,20) == 'left':
         grav_velocity2 = -20
         c_xchange = -20
         cube_mode = 'launchingleft'
@@ -415,12 +420,12 @@ Also includes the moving of player concerning portals.'''
         state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity=-20 #a negative gravity makes it go up
         
-    if launch(oldpos,newpos) == 'right':
+    if launch(oldpos,newpos,pl,pw) == 'right':
         grav_velocity = -20
         xchange = -20
         mode = 'launchingright'
         
-    if launch(oldpos,newpos) == 'left':
+    if launch(oldpos,newpos,pl,pw) == 'left':
         grav_velocity = -20
         xchange = -20
         mode = 'launchingleft'
@@ -526,8 +531,11 @@ def jumpBlock(oldpos,newpos,pl,pw):
     for b in blockList:
         if b.colliderect(new_rect):
             return True
-def launch(oldpos,newpos):
-    new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
+def launch(oldpos,newpos,length,width):
+    if length!=20:
+        new_rect=Rect(newpos[0]+14,newpos[1],length-29,width+1)
+    else:
+        new_rect=Rect(newpos[0],newpos[1],length,width+1)
     for p in launchPad:
         if p.colliderect(new_rect):
             return 'right'
@@ -607,8 +615,8 @@ while running:
 
 #----MOVING----------------------------------
     
-    (px,py),state,grav_velocity,oldpos,last_tp,forced_end,(cx,cy)=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end,[cx,cy],True)
-    
+    (px,py),state,grav_velocity,oldpos,last_tp,forced_end,(cx,cy)=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end,[cx,cy])
+    (cx,cy),cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end=cubemove([cx,cy],cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end) 
 
 #----SHOOTING--------------------------------
     if b_click:
@@ -643,7 +651,6 @@ while running:
 
     if orangep[-1] != None and hit1:
         draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],8)
-    cx,cy=cubemove((cx,cy))
     
     screen.blit(cube,(cx,cy))
     
