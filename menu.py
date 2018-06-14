@@ -18,6 +18,7 @@ def menu():
     myClock = time.Clock()
     rects=[(400,(y+5)*55) for y in range(4)]
     texts=[]
+    
     for i in range(4):
         texts.append(image.load('B%s.png'%(i+1)))
     
@@ -54,5 +55,9 @@ def menu():
                 
         display.flip()
     quit()
-    
-menu()
+running=True
+while running:
+
+    running=menu()
+    display.flip()
+quit()
