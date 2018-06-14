@@ -96,9 +96,8 @@ frame=0
 frame2=0
 direction_face=0
 cx,cy=300,450
-arm=image.load('arm.png')
 for i in range(2,26):
-    forward.append(transform.scale(image.load(str(i+1)+"test.png"),(50,70)))
+    forward.append(transform.scale(image.load(str(i+1)+".png"),(50,70)))
 for i in range(2,26):
     backward.append(transform.scale(image.load('l'+str(i+1)+".png"),(50,70)))    
 def state_change(state,jump,left,right):
@@ -686,18 +685,7 @@ while running:
         
         ang=portal_rotation(orangep[0])
         screen.blit(transform.rotate(orangep_sprite[int(orange_frame)%3],ang),(orangep[0][0]-8,orangep[0][1]-8))
-    arm_ang=degrees(atan2(my-py,mx-px))*-1
-    def rot_center(image, angle):
-        """rotate an image while keeping its center and size"""
-        orig_rect = image.get_rect()
-        rot_image = transform.rotate(image, angle)
-        rot_rect = orig_rect.copy()
-        rot_rect.center = rot_image.get_rect().center
-        rot_image = screen.subsurface(rot_rect).copy()
-        return rot_image
-    rotarm=rot_center(arm,arm_ang)
-    screen.blit(rotarm,(px+23,py+20))
-    print(arm_ang)
+        
     screen.blit(cube,(cx,cy))
     blue_frame+=0.3
     orange_frame+=0.3
