@@ -457,4 +457,4 @@ def game():
         display.flip()
         
     quit()
-            
+game()           

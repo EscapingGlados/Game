@@ -143,17 +143,17 @@ def game():
     def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing):
         '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
     Also includes the moving of player concerning portals.'''
-         
+        
         playerpos=list(playerpos)
         startpos = playerpos[:]
         
-        if keys[K_d] and not forced_end and mode != "launchingright" and mode != "launchingleft":
+        if keys[K_d] and not forced_end: #and mode != "launchingright" and mode != "launchingleft":
             playerpos=list(playerpos)
             playerpos[0]+=5
             newpos=playerpos[:]
             playerpos=collide(oldpos,newpos,map_grid)
 
-        if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
+        if keys[K_a] and not forced_end:# and mode != "launchingright" and mode != "launchingleft":
             playerpos=list(playerpos)
             playerpos[0]-=5
             newpos=playerpos[:]
@@ -185,7 +185,6 @@ def game():
                 playerpos[0] += 15
             elif face == "Left":
                 playerpos[0] -= 15         
-            
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid)
 
@@ -336,6 +335,7 @@ def game():
         return newpos
 
     def jumpBlock(oldpos,newpos):
+        
         new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
         for b in blockList:
             if b.colliderect(new_rect):
@@ -349,7 +349,6 @@ def game():
         for x in launchPad2:
             if x.colliderect(new_rect):
                 return 'left'
-        return 'not launching'
 
             
     def facing(x,y):
@@ -499,7 +498,7 @@ def levelEd():
     col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(0,0,0)]#nothing,can portal,cant portal,jump pad, launch pad right, launch pad left 
     current = 1
     back = image.load("background.bmp")
-    level = loadMap("startXD.p")
+    level = loadMap("level1.p")
     colz = (255,0,0)
     buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False]]
 
@@ -524,6 +523,7 @@ def levelEd():
                 if typing == True and e.key < 256:
                     if keys[K_BACKSPACE]:
                         name = name[:-1]
+                        
                     elif keys[K_RETURN]:
                         saveMap(level, str(name))
                         typing = False
@@ -556,7 +556,7 @@ def levelEd():
         elif keys[K_ESCAPE] and showing == False:
             showing = True
             
-        if mouse.get_pressed()[0]:
+        if mouse.get_pressed()[0] and typing == False and loadingScreen == False:
             gx = mx // 10
             gy = my // 10
             level[gx][gy] = current
@@ -570,7 +570,6 @@ def levelEd():
             level[gx][gy] = 0
             
         drawAll(screen, level, back)
-        
         if typing == True:
             draw.rect(screen,(0,0,0),(0,0,600,50))
             text(name,0,0)
@@ -594,13 +593,15 @@ def levelEd():
             for i in range(len(picList)):
                 if Rect(200,50*i+200,600,50).collidepoint((mx,my)):
                     if click:
-                        print("noggers")
+                        print(picList[i][6:]+".p")
                         level = loadMap(picList[i][6:]+".p")
-                    draw.rect(screen,(255,0,0),(200,50*i+200,600,50))
-                
-                text(picList[i][6:],200,50*i+200)
+                       # print(level)
+                        loadingScreen = False
+                        time.sleep(0.05)
+                    draw.rect(screen,(255,0,0),(200,50*i+200,400,50))
                     
-        
+                text(picList[i][6:],200,50*i+200)
+                           
         display.flip()
 
     quit()
