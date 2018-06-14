@@ -96,8 +96,9 @@ frame=0
 frame2=0
 direction_face=0
 cx,cy=300,450
+arm=image.load('arm.png')
 for i in range(2,26):
-    forward.append(transform.scale(image.load(str(i+1)+".png"),(50,70)))
+    forward.append(transform.scale(image.load(str(i+1)+"test.png"),(50,70)))
 for i in range(2,26):
     backward.append(transform.scale(image.load('l'+str(i+1)+".png"),(50,70)))    
 def state_change(state,jump,left,right):
@@ -208,7 +209,7 @@ def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end
                 if bluep[-1] == orangep[-1]: #Same one, inverse that component
 ##
                     c_ddx, c_ddy = c_quadrant_adjust[0](c_de_x), c_quadrant_adjust[1](c_de_y) #if on same wall got to make it push 180 the other portal
-                    cube_forced_end = [ddx, ddy, 10]
+                    cube_forced_end = [c_ddx, c_ddy, 10]
 ##
                 else: #Opposite direction, keep it identical
                     cube_forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
@@ -227,7 +228,7 @@ def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end
     npos=cubepos[:]
 ##    #playerpos=collide(oldpos,newpos,map_grid)
 ##
-
+    print(cube_forced_end)
     if jumpBlock(opos,npos,20,20):
         cube_state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity2=-20 #a negative gravity makes it go up
@@ -290,6 +291,7 @@ Also includes the moving of player concerning portals.'''
     global direction_face
     global mx,my
     global holding
+    print(forced_end)
     playerpos=list(playerpos)
     startpos = playerpos[:]
     holding=False
@@ -373,12 +375,12 @@ Also includes the moving of player concerning portals.'''
         #switched = False
         outways = None
         
-        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 65:
+        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 42:
             playerpos = orangep[0]
             switched= True
             outways = orangep[-1] #direction it is facing
             
-        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 65:
+        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 42:
             playerpos = bluep[0]
             switched= True
             outways = bluep[-1]
@@ -630,9 +632,9 @@ while running:
         if keys[K_a]:
             direction_face=1
 
-    screen.blit(backg,(0,0))
     
-    drawback(screen)
+    
+    
     
 
     
@@ -645,11 +647,10 @@ while running:
 #----SHOOTING--------------------------------
     if b_click:
         bluep=[[px+25,py+25],atan2(my-(py+25), mx-(px+25)),1,None]
-    if (state=='idle' or state=='jump') and ((not keys[K_a] and not keys[K_d]) or (keys[K_a] and keys[K_d])):
-        screen.blit(idle[direction_face],(px,py))
-        
     
-    bluep = shooting(bluep, (8,131,219))
+    
+    
+    
     
     if keys[K_r]:
         bluep=[None]
@@ -658,17 +659,22 @@ while running:
     if o_click:
         orangep=[[px+25,py+25],atan2(my-(py+25), mx-(px+25)),1,None]
 
-    orangep = shooting(orangep, (252,69,2))
+    
     if bluep!=[None] and orangep!=[None] :
         if portal_self_collide(bluep[0],orangep[0]):
             bluep=[None]
             orangep=[None]
     
 #----DRAWING---------------------------------
+    drawback(screen)
+    orangep = shooting(orangep, (252,69,2))
+    bluep = shooting(bluep, (8,131,219))
+    if (state=='idle' or state=='jump') and ((not keys[K_a] and not keys[K_d]) or (keys[K_a] and keys[K_d])):
+        screen.blit(idle[direction_face],(px,py))
     if  keys[K_d] and not keys[K_a]:
-        screen.blit(forward[frame%24],(px,py))
+        screen.blit(forward[int(frame)%24],(px,py))
     if keys[K_a] and not keys[K_d]:
-        screen.blit(backward[frame%24],(px,py))
+        screen.blit(backward[int(frame)%24],(px,py))
 
     if bluep[-1] != None and hit:
         
@@ -680,11 +686,22 @@ while running:
         
         ang=portal_rotation(orangep[0])
         screen.blit(transform.rotate(orangep_sprite[int(orange_frame)%3],ang),(orangep[0][0]-8,orangep[0][1]-8))
-        
+    arm_ang=degrees(atan2(my-py,mx-px))*-1
+    def rot_center(image, angle):
+        """rotate an image while keeping its center and size"""
+        orig_rect = image.get_rect()
+        rot_image = transform.rotate(image, angle)
+        rot_rect = orig_rect.copy()
+        rot_rect.center = rot_image.get_rect().center
+        rot_image = screen.subsurface(rot_rect).copy()
+        return rot_image
+    rotarm=rot_center(arm,arm_ang)
+    screen.blit(rotarm,(px+23,py+20))
+    print(arm_ang)
     screen.blit(cube,(cx,cy))
     blue_frame+=0.3
     orange_frame+=0.3
-    frame+=1
+    frame+=1.2
     oldpos=[px,py]
     display.flip()
     
