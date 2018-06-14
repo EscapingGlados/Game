@@ -20,6 +20,7 @@ def starting():
     myClock = time.Clock()
     rects=[(400,(y+5)*55) for y in range(4)]
     texts=[]
+    
     for i in range(4):
         texts.append(image.load('B%s.png'%(i+1)))
 
@@ -56,5 +57,14 @@ def starting():
                 
         display.flip()
     quit()
+<<<<<<< HEAD
     
 
+=======
+running=True
+while running:
+
+    running=menu()
+    display.flip()
+quit()
+>>>>>>> 789349e8d7c3d12c409e60a6c0b0fd2ad18092d9

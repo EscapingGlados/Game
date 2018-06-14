@@ -13,6 +13,17 @@ brick = transform.scale(image.load('surface2.bmp'),(10,10))
 block = transform.scale(image.load('block.png'),(10,10))
 backg=image.load('background.bmp')
 cube=transform.scale(image.load('comp_cube.png'),(20,20))
+
+bluep_sprite=[]
+for i in range(4):
+    bluep_sprite.append(transform.scale(image.load('bp%s.png'%(i)),(48,30)))
+blue_frame=0
+
+orangep_sprite=[]
+for i in range(4):
+    orangep_sprite.append(transform.scale(image.load('op%s.png'%(i)),(48,30)))
+orange_frame=0
+
 def loadMap(fname):
     if fname in os.listdir("."):
         myPFile = open(fname, "rb")
@@ -110,9 +121,14 @@ def bullet_collideWall(portal):
 grav_velocity2=0
 cube_state='idle'
 cx,cy=280,240
-opos=cx,cy
+opos=[cx,cy]
+cube_last_tp=t.time()
+cube_forced_end=False
+cube_mode='idle'
+c_xchange=0
+cube_floatingmode=False
 def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end):
-    global cube_mode,cube_xchange,cube_floatingmode
+    global cube_mode,c_xchange,cube_floatingmode
     
     global holding
     cubepos=list(cubepos)
@@ -175,8 +191,8 @@ def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end
 ##        
         if cube_switched:
             cube_last_tp = t.time()
-            c_de_x = begin_pos[0]- cube_startpos[0]
-            c_de_y = begin_pos[1] - cube_startpos[1]
+            c_de_x = cube_begin_pos[0]- cube_startpos[0]
+            c_de_y = cube_begin_pos[1] - cube_startpos[1]
 ##            
             cube_categories = {"Right":True, "Left":True, "Up": False, "Down": False}
             c_tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[cube_outways]
@@ -200,7 +216,7 @@ def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end
             else: #Changing both components
                 c_de_x, c_de_y = c_de_y, c_de_x #Reverse them
                 c_ddx, c_ddy = c_quadrant_adjust[0](c_de_x), c_quadrant_adjust[1](c_de_y) 
-                cube_forced_end = [ddx, ddy, 10]
+                cube_forced_end = [c_ddx, c_ddy, 10]
 ##            
 ##            
 ####            if floatingmode == True:
@@ -216,12 +232,12 @@ def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end
         cube_state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity2=-20 #a negative gravity makes it go up
 ##        
-    if launch(opos,npos) == 'right':
+    if launch(opos,npos,20,20) == 'right':
         grav_velocity2 = -20
         c_xchange = -20
         cube_mode = 'launchingright'
 ##        
-    if launch(opos,npos) == 'left':
+    if launch(opos,npos,20,20) == 'left':
         grav_velocity2 = -20
         c_xchange = -20
         cube_mode = 'launchingleft'
@@ -352,16 +368,17 @@ Also includes the moving of player concerning portals.'''
     plr_x,plr_y = playerpos
     
     switched = False
+    
     if bluep[-1] and orangep[-1] and (t.time() - last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
         #switched = False
         outways = None
         
-        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 45:
+        if hypot(plr_x+25-bluep[0][0], plr_y+25-bluep[0][1]) < 65:
             playerpos = orangep[0]
             switched= True
             outways = orangep[-1] #direction it is facing
             
-        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 45:
+        elif hypot(plr_x+25-orangep[0][0], plr_y+25-orangep[0][1]) < 65:
             playerpos = bluep[0]
             switched= True
             outways = bluep[-1]
@@ -415,12 +432,12 @@ Also includes the moving of player concerning portals.'''
         state=state_change(state,True,keys[K_d],keys[K_a])
         grav_velocity=-20 #a negative gravity makes it go up
         
-    if launch(oldpos,newpos) == 'right':
+    if launch(oldpos,newpos,pl,pw) == 'right':
         grav_velocity = -20
         xchange = -20
         mode = 'launchingright'
         
-    if launch(oldpos,newpos) == 'left':
+    if launch(oldpos,newpos,pl,pw) == 'left':
         grav_velocity = -20
         xchange = -20
         mode = 'launchingleft'
@@ -440,6 +457,7 @@ Also includes the moving of player concerning portals.'''
         grav_velocity+=0.75
         newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid,pl,pw)
+    
         
     return playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos
 
@@ -526,8 +544,11 @@ def jumpBlock(oldpos,newpos,pl,pw):
     for b in blockList:
         if b.colliderect(new_rect):
             return True
-def launch(oldpos,newpos):
-    new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
+def launch(oldpos,newpos,length,width):
+    if length!=20:
+        new_rect=Rect(newpos[0]+14,newpos[1],length-29,width+1)
+    else:
+        new_rect=Rect(newpos[0],newpos[1],length,width+1)
     for p in launchPad:
         if p.colliderect(new_rect):
             return 'right'
@@ -546,6 +567,16 @@ def facing(x,y):
         return 'Up'
     elif bullet_collide((x,y-16)):
         return 'Down'
+def portal_rotation(pos):
+    if facing(pos[0],pos[1])=='Up':
+        return 0
+    if facing(pos[0],pos[1])=='Down':
+        return 180
+    if facing(pos[0],pos[1])=='Right':
+        return -90
+    if facing(pos[0],pos[1])=='Left':
+        return 90
+    
             
 
 def shooting(bullet, col):
@@ -579,6 +610,7 @@ def shooting(bullet, col):
     return portal
 
 oldpos=[px,py]
+ang=0
 while running:
     b_click=False
     o_click=False
@@ -607,8 +639,8 @@ while running:
 
 #----MOVING----------------------------------
     
-    (px,py),state,grav_velocity,oldpos,last_tp,forced_end,(cx,cy)=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end,[cx,cy],True)
-    
+    (px,py),state,grav_velocity,oldpos,last_tp,forced_end,(cx,cy)=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end,[cx,cy])
+    (cx,cy),cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end=cubemove([cx,cy],cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end) 
 
 #----SHOOTING--------------------------------
     if b_click:
@@ -639,14 +671,19 @@ while running:
         screen.blit(backward[frame%24],(px,py))
 
     if bluep[-1] != None and hit:
-        draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],8)
+        print(facing(bluep[0][0],bluep[0][1]))
+        ang=portal_rotation(bluep[0])
+        screen.blit(transform.rotate(bluep_sprite[int(blue_frame)%3],ang),(bluep[0][0]-8,bluep[0][1]-8))
+#        draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],8)
 
     if orangep[-1] != None and hit1:
-        draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],8)
-    cx,cy=cubemove((cx,cy))
-    
+        print(ang)
+        ang=portal_rotation(orangep[0])
+        screen.blit(transform.rotate(orangep_sprite[int(orange_frame)%3],ang),(orangep[0][0]-8,orangep[0][1]-8))
+        
     screen.blit(cube,(cx,cy))
-    
+    blue_frame+=0.3
+    orange_frame+=0.3
     frame+=1
     oldpos=[px,py]
     display.flip()
