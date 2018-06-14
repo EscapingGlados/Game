@@ -27,7 +27,7 @@ def game():
             return pickle.load(myPFile)       
         else:
             return [[0]*60 for x in range(80)]
-    map_grid = loadMap("tut3.p")
+    map_grid = loadMap("level1.p")
     wall_rects=[]
     wall2_rects = []
     blockList = []
@@ -262,7 +262,6 @@ def game():
             grav_velocity = -20
             xchange = -20
             mode = 'launchingright'
-            
         if launch(oldpos,newpos) == 'left':
             grav_velocity = -20
             xchange = -20
@@ -350,6 +349,7 @@ def game():
         for x in launchPad2:
             if x.colliderect(new_rect):
                 return 'left'
+        return 'not launching'
 
             
     def facing(x,y):
@@ -594,6 +594,7 @@ def levelEd():
             for i in range(len(picList)):
                 if Rect(200,50*i+200,600,50).collidepoint((mx,my)):
                     if click:
+                        print("noggers")
                         level = loadMap(picList[i][6:]+".p")
                     draw.rect(screen,(255,0,0),(200,50*i+200,600,50))
                 
