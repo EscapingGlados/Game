@@ -55,10 +55,4 @@ def menu():
         display.flip()
     quit()
     
-running=True
-while running:
-    running=menu()
-    
-
-    display.flip()
-quit()
+menu()
