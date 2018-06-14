@@ -668,7 +668,7 @@ while running:
     drawback(screen)
     orangep = shooting(orangep, (252,69,2))
     bluep = shooting(bluep, (8,131,219))
-    if (state=='idle' or state=='jump') and ((not keys[K_a] and not keys[K_d]) or (keys[K_a] and keys[K_d])):
+    if state=='idle'  and ((not keys[K_a] and not keys[K_d]) or (keys[K_a] and keys[K_d])):
         screen.blit(idle[direction_face],(px,py))
     if  keys[K_d] and not keys[K_a]:
         screen.blit(forward[int(frame)%24],(px,py))
