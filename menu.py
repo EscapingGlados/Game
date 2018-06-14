@@ -57,14 +57,13 @@ def starting():
                 
         display.flip()
     quit()
-<<<<<<< HEAD
-    
 
-=======
+
+
 running=True
 while running:
 
-    running=menu()
+    starting()
     display.flip()
 quit()
->>>>>>> 789349e8d7c3d12c409e60a6c0b0fd2ad18092d9
+

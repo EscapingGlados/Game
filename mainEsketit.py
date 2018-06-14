@@ -594,7 +594,6 @@ def levelEd():
             for i in range(len(picList)):
                 if Rect(200,50*i+200,600,50).collidepoint((mx,my)):
                     if click:
-                        print("noggers")
                         level = loadMap(picList[i][6:]+".p")
                     draw.rect(screen,(255,0,0),(200,50*i+200,600,50))
                 
