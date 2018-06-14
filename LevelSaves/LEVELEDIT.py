@@ -6,6 +6,7 @@ from pprint import *
 
 showing = True
 typing = False
+
 font.init()
 rekt = Rect(750,550,50,50)
 
@@ -32,7 +33,7 @@ screen = display.set_mode((800,600))
 col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(0,0,0)]#nothing,can portal,cant portal,jump pad, launch pad right, launch pad left 
 current = 1
 back = image.load("background.bmp")
-level = loadMap("nigs.p")
+level = loadMap("tut1.p")
 colz = (255,0,0)
 buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False]]
 
