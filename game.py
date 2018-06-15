@@ -12,6 +12,15 @@ def Main():
     block = transform.scale(image.load('block.png'),(10,10))
     backg=image.load('checking_level1.png')
     cube=transform.scale(image.load('comp_cube.png'),(20,20))
+    bluep_sprite=[]
+    for i in range(4):
+        bluep_sprite.append(transform.scale(image.load('bp%s.png'%(i)),(48,30)))
+    blue_frame=0
+
+    orangep_sprite=[]
+    for i in range(4):
+        orangep_sprite.append(transform.scale(image.load('op%s.png'%(i)),(48,30)))
+    orange_frame=0
     def loadMap(fname):
         if fname in os.listdir("."):
             myPFile = open(fname, "rb")
@@ -502,7 +511,7 @@ def Main():
         plr_x,plr_y = playerpos
         
         switched = False
-        if bluep[-1] and orangep[-1] and (time.time() - last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
+        if bluep[-1] and orangep[-1] and (t.time() - last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
             #switched = False
             outways = None
             
@@ -517,7 +526,7 @@ def Main():
                 outways = bluep[-1]
             
             if switched:
-                last_tp = time.time()
+                last_tp = t.time()
                 de_x = begin_pos[0]- startpos[0]
                 de_y = begin_pos[1] - startpos[1]
                 
@@ -682,7 +691,16 @@ def Main():
         elif bullet_collide((x,y-16)):
             return 'Down'
                 
-
+    def portal_rotation(pos):
+        if facing(pos[0],pos[1])=='Up':
+            return 0
+        if facing(pos[0],pos[1])=='Down':
+            return 180
+        if facing(pos[0],pos[1])=='Right':
+            return -90
+        if facing(pos[0],pos[1])=='Left':
+            return 90
+    
     def shooting(bullet, col,hit,hit1):
          
         portal = bullet[:]
@@ -778,12 +796,14 @@ def Main():
             screen.blit(backward[frame%24],(px,py))
 
         if bluep[-1] != None and hit:
-            draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],8)
+            ang=portal_rotation(bluep[0])
+            screen.blit(transform.rotate(bluep_sprite[int(blue_frame)%3],ang),(bluep[0][0]-bluep_sprite[int(blue_frame)%3].get_width()//2,bluep[0][1]-bluep_sprite[int(blue_frame)%3].get_height()//2))
 
         if orangep[-1] != None and hit1:
             draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],8)
         screen.blit(cube,(cx,cy))
         frame+=1
+        blue_frame+=0.3
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
      #   print(hypot(endpoint[0]-px,endpoint[1]-py))
