@@ -50,6 +50,7 @@ def game():
                 launchPad2.append(Rect((x*10,y*10,10,10)))#launchpadleft
             if c == 6:
                 shield.append(Rect((x*10,y*10,10,10)))
+            
                 
                 
     def drawback(screen):
