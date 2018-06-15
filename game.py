@@ -20,6 +20,7 @@ def Main():
             return [[0]*60 for x in range(80)]
 
 
+    levels = ["level1","level2","level3.p","level4.p","level5.p"]
     levelindex = 0
     
     map_grid = loadMap(levels[levelindex])
@@ -796,11 +797,9 @@ def Main():
 
         screen.blit(cube,(cx,cy))
         frame+=1
-<<<<<<< HEAD
         blue_frame+=0.3
         orange_frame+=0.3
-=======
->>>>>>> eb26659a0c6f6c42c84fe2b5db3a55386eb4a6e5
+
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
      #   print(hypot(endpoint[0]-px,endpoint[1]-py))
