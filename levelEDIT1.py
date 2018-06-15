@@ -24,26 +24,26 @@ iconup = transform.scale(up,(46,46))
 
 
 def drawAll(screen,output,image):
-    screen.blit(image,(0,0))
+    screen.blit(image,(0,0))#MAKES 2D LIST
     for x in range(80):
         for y in range(60):
             c = output[x][y]
             if c != 0:
                 draw.rect(screen,col[c], (x*10,y*10,10,10))
                 
-def loadMap(fname):
+def loadMap(fname):#LOAD PICKLE FILES
     if fname in os.listdir("."):
         myPFile = open(fname, "rb")
         return pickle.load(myPFile)       
     else:
         return [[0]*60 for x in range(80)]
     
-def saveMap(level, fname):
+def saveMap(level, fname):#SAVE PICKLE FILES
     myPFile = open(fname, "wb")
     pickle.dump(level, myPFile)
 
 screen = display.set_mode((800,600))
-col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(255,100,100)]#nothing,can portal,cant portal,jump pad, launch pad right, launch pad left,shield 
+col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,22),(255,100,100),(0,0,0)]#nothing,can portal,cant portal,jump pad, launch pad right, launch pad left,shield 
 
 icons = ["nothing","nothing","nothing",left,right,up]
 
@@ -51,7 +51,7 @@ current = 1
 back = image.load("Level_2_final.png")
 level = loadMap("level2Real")
 colz = (255,0,0)
-buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False],[470,False]]
+buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False],[470,False],[540,False]]
 
 upheav = font.Font("upheavtt.ttf",40)
 name = ""
@@ -86,9 +86,9 @@ while running:
                     
     mx, my = mouse.get_pos()
     keys = key.get_pressed()                
-    for i in range(8):
+    for i in range(9):
         if keys[i+48]:
-            if i < 1 or i > 7:
+            if i < 1 or i > 8:
                 pass
             else:
                 current = i
@@ -118,7 +118,7 @@ while running:
         
     buttons[current-1][1] = True
     
-    for i in range(7):
+    for i in range(8):
         if buttons[i] != buttons[current-1]:
             buttons[i][1] = False
         if buttons[i][1] == False:
