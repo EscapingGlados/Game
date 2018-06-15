@@ -12,16 +12,25 @@ def Main(lev):
     loadingScreen = False
     font.init()
     rekt = Rect(750,550,50,50)
+    backRect = Rect(750,0,50,50)
 
     left = image.load("launch_left_block.png")
     right = image.load("launch_right_block.png")
     up = image.load("jump_block.png")
-
+    can = image.load("base_brick.png")
+    cant = image.load("base_brick_non_portal.png")
+    shield = image.load("force_field.png")
+    home = image.load("home.png")
+    
 
 
     iconleft = transform.scale(left,(46,46))
     iconright = transform.scale(right,(46,46))
     iconup = transform.scale(up,(46,46))
+    iconcan =transform.scale(can,(46,46))
+    iconcant = transform.scale(cant,(46,46))
+    iconshield = transform.scale(shield,(46,46))
+    home = transform.scale(home,(50,50))
 
 
     def drawAll(screen,output,image):
@@ -100,7 +109,10 @@ def Main(lev):
                     
         if click and rekt.collidepoint((mx,my)) and showing:
             typing = True
-
+        if click and backRect.collidepoint((mx,my)) and showing:
+            operation = 'intro'
+            running = False
+        
     ##    if click and loadRect.collidepoint((mx,my)) and showing:
     ##        loadingScreen = True
     ##        picList = glob.glob("*")
@@ -142,8 +154,12 @@ def Main(lev):
             screen.blit(iconleft,(buttons[4][0]+2,52))
             screen.blit(iconright,(buttons[3][0]+2,52))
             screen.blit(iconup,(buttons[2][0]+2,52))
-                                
+            screen.blit(iconcan,(buttons[0][0]+2,52))
+            screen.blit(iconcant,(buttons[1][0]+2,52))
+            screen.blit(iconshield,(buttons[5][0]+2,52))
             draw.rect(screen,(0,0,255),rekt)
+            draw.rect(screen,(255,0,0),backRect)
+            screen.blit(home,(750,0))
                     
     ##    if loadingScreen == True:
     ##        for i in range(len(picList)):

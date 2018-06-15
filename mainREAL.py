@@ -6,6 +6,8 @@ import load
 import testingLevel
 import loadTest
 
+#ESCAPING GLADOS
+#BY AARYAN PATEL AND FEEDA ELAHRESH
 running = True
 operation = 'intro'
 levelName = ''
