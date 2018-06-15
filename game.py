@@ -12,6 +12,15 @@ def Main():
     block = transform.scale(image.load('block.png'),(10,10))
     backg=image.load('checking_level1.png')
     cube=transform.scale(image.load('comp_cube.png'),(20,20))
+    bluep_sprite=[]
+    for i in range(4):
+        bluep_sprite.append(transform.scale(image.load('bp%s.png'%(i)),(48,30)))
+    blue_frame=0
+
+    orangep_sprite=[]
+    for i in range(4):
+        orangep_sprite.append(transform.scale(image.load('op%s.png'%(i)),(48,30)))
+    orange_frame=0
     def loadMap(fname):
         if fname in os.listdir("."):
             myPFile = open(fname, "rb")
@@ -691,7 +700,17 @@ def Main():
         elif bullet_collide((x,y-16)):
             return 'Down'
                 
+    def portal_rotation(pos):
+        if facing(pos[0],pos[1])=='Up':
+            return 0
+        if facing(pos[0],pos[1])=='Down':
+            return 180
+        if facing(pos[0],pos[1])=='Right':
+            return -90
+        if facing(pos[0],pos[1])=='Left':
+            return 90
 
+    
     def shooting(bullet, col,hit,hit1):
          
         portal = bullet[:]
@@ -725,6 +744,7 @@ def Main():
         return portal,hit,hit1
 
     oldpos=[px,py]
+    ang=0
     while running:
         b_click=False
         o_click=False
@@ -797,11 +817,9 @@ def Main():
 
         screen.blit(cube,(cx,cy))
         frame+=1
-<<<<<<< HEAD
+
         blue_frame+=0.3
         orange_frame+=0.3
-=======
->>>>>>> eb26659a0c6f6c42c84fe2b5db3a55386eb4a6e5
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
      #   print(hypot(endpoint[0]-px,endpoint[1]-py))
