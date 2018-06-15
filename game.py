@@ -7,7 +7,8 @@ mixer.init()
 def Main():
     running = True
     screen = display.set_mode((800,600))
-    
+    next_song_notify=USEREVENT+1
+    mixer.music.set_endevent(next_song_notify)
     
     theme=mixer.music.load('song.wav')
     mixer.music.play()
@@ -758,8 +759,6 @@ def Main():
     oldpos=[px,py]
     ang=0
     while running:
-  
-            
         b_click=False
         o_click=False
         keys=key.get_pressed()
