@@ -3,11 +3,15 @@ from math import *
 import time as t
 import os
 import pickle
-
+mixer.init()
 def Main():
     running = True
     screen = display.set_mode((800,600))
-
+    next_song_notify=USEREVENT+1
+    mixer.music.set_endevent(next_song_notify)
+    
+    theme=mixer.music.load('song.wav')
+    mixer.music.play()
     brick = transform.scale(image.load('surface2.bmp'),(10,10))
     block = transform.scale(image.load('block.png'),(10,10))
     level1=image.load('Level_1_final.png')
@@ -589,6 +593,7 @@ def Main():
         if not switched and collide(oldpos,[oldpos[0],oldpos[1]+1],map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])==[oldpos[0],oldpos[1]+1] and state!='jump': #is gravity when player isn't jumping//checks if a pixel beneath is vacant or not
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=0
+
         if keys[K_w] and state!='jump':#CHANGES STATE TO JUMP IF W IS CLICKED
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=-8 #a negative gravity makes it go up
