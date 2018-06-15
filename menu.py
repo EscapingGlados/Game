@@ -62,6 +62,10 @@ def Main():
             operation = 'load'
             running = False
             
+        elif click and Rect(rects2[2][0],rects2[2][1],240,50).collidepoint(mpos) and blitMode == 'edit':
+            operation = 'loadTest'
+            running = False
+            
         screen.blit(menu_background,(0,0))
         screen.blit(door,(750,455))
         screen.blit(glados,(55,0-motion))
