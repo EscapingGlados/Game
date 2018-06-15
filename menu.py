@@ -41,17 +41,19 @@ def Main():
         if click and Rect(rects[0][0],rects[0][1],208,53).collidepoint(mpos):
             operation = 'game'
             running = False
-        
+        if click and Rect(rects[1][0]rects[1][1]
         screen.blit(menu_background,(0,0))
         screen.blit(door,(750,455))
         screen.blit(glados,(55,0-motion))
         screen.blit(sprint[int(frame)%22],(400,500))
+        
         for pos in range(len(rects)):
             if (Rect(rects[pos][0],rects[pos][1],208,53)).collidepoint(mpos):
                 screen.blit(click_button,rects[pos])
             else:
                 screen.blit(button,rects[pos])
             screen.blit(texts[pos],rects[pos])
+        
         frame+=0.7
         if switch:
             motion+=1
