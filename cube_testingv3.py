@@ -282,7 +282,7 @@ def holding_cube(dist,facing,holding,cubepos,playerpos):
     return holding,cubepos
                 
 
-ocx,ocy=[cx,cy]
+
 def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,cubepos):
     '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
 Also includes the moving of player concerning portals.'''
@@ -487,27 +487,27 @@ def collide(oldpos,newpos,grid,pl,pw):
     if pl!=20 and pw!=20:
         new_rect=Rect(newpos[0]+14,newpos[1],pl-29,pw)
         crect=Rect(cx,cy,20,20)
-        if keys[K_d]:
+   #     if keys[K_d]:
             
             
             
-            if crect.colliderect(new_rect):
-                return oldpos
-        if keys[K_a]:
+        if crect.colliderect(new_rect):
+            return oldpos
+    #    elif keys[K_a]:
                  
             
             
-            if crect.colliderect(new_rect):
-                return oldpos
-        else:
-            new_rect=Rect(newpos[0]+14,newpos[1],pl-29,pw)        
+     #       if crect.colliderect(new_rect):
+      #          return oldpos
+       # else:
+          #  new_rect=Rect(newpos[0]+14,newpos[1],pl-29,pw)        
             
-            crect=Rect(cx,cy,20,20)
-            if crect.colliderect(new_rect):
-                return oldpos
+           # crect=Rect(cx,cy,20,20)
+        #    if crect.colliderect(new_rect):
+         #       return oldpos
     new_rect=Rect(newpos[0],newpos[1],pl,pw)
-    if pl!=20 and pw!=20:
-        new_rect=Rect(newpos[0]+28,newpos[1],11,60)
+  #  if pl!=20 and pw!=20:
+   #     new_rect=Rect(newpos[0]+28,newpos[1],11,60)
     for wall in wall_rects:
         if wall.colliderect(new_rect):
             floatingmode = False
@@ -610,7 +610,7 @@ def shooting(bullet, col):
     return portal
 
 oldpos=[px,py]
-ang=0
+
 while running:
     b_click=False
     o_click=False
@@ -640,6 +640,7 @@ while running:
 #----MOVING----------------------------------
     
     (px,py),state,grav_velocity,oldpos,last_tp,forced_end,(cx,cy)=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end,[cx,cy])
+    print((cx,cy),cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end)
     (cx,cy),cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end=cubemove([cx,cy],cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end) 
 
 #----SHOOTING--------------------------------

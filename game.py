@@ -1,6 +1,6 @@
 from pygame import *
 from math import *
-import time
+import time as t
 import os
 import pickle
 
@@ -62,7 +62,7 @@ def Main():
     floatingmode = False
 
     click=0
-    portal_delay=time.time()
+    portal_delay=t.time()
     b_collide=False
     o_collide=False
     bluep=[None]
@@ -127,7 +127,7 @@ def Main():
 
         return wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py
         
-    last_tp = time.time()
+    last_tp = t.time()
 
     idle=[]
     idle.append(transform.scale(image.load('1.png'),(50,70)))
@@ -176,27 +176,298 @@ def Main():
                 return True
                 break
         return False
-    def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing):
+    grav_velocity2=0
+    cube_state='idle'
+    cx,cy=280,240
+    opos=[cx,cy]
+    cube_last_tp=t.time()
+    cube_forced_end=False
+    cube_mode='idle'
+    c_xchange=0
+    cube_floatingmode=False
+    holding=False
+    def cubemove(cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end,cube_mode,c_xchange,cube_floatingmode,holding):
+        
+        cubepos=list(cubepos)
+        cube_startpos=cubepos[:]
+        npos=cubepos[:]
+        cubepos=collide(opos,npos,map_grid,floatingmode,20,20,20,20)
+       
+        opos=cubepos[:]
+  
+        if holding==True:
+            grav_velocity2=0
+        if cube_state=='falling' and holding==False:
+ 
+            cubepos=list(cubepos)
+            cubepos[1]+=grav_velocity2
+            grav_velocity2+=0.75
+            
+            npos=cubepos[:]
+            
+    
+            cubepos=collide(opos,npos,map_grid,floatingmode,20,20,20,20)
+            
+            if cubepos==opos and opos[1]<npos[1] and cube_state=='falling':
+                cube_state='idle'
+                cube_mode='idle'
+        
+        if collide(opos,[opos[0],opos[1]+1],map_grid,floatingmode,20,20,20,20)==[opos[0],opos[1]+1] and cube_state!='falling' :
+            cube_state='falling'
+            grav_velocity2=0
+            
+        if jumpBlock(opos,npos,20,20) and cube_state=='idle' :
+            cube_state='bounce'
+            grav_velocity2=0
+            
+        opos=cubepos[:]
+      
+        if cube_state=='bounce':
+            cubepos=list(cubepos)
+            cubepos[1]+=grav_velocity2
+        
+            grav_velocity2-=70.5
+           
+        
+            npos=cubepos[:]
+            cubepos=collide(opos,npos,map_grid,floatingmode,20,20,20,20)
+           
+            if cubepos==opos and opos[1]<npos[1]: #this checks if player is coming down from jump//nothing is effecting  except gravity
+                cube_state='idle'
+
+            
+            cubepos=collide(opos,npos,map_grid,floatingmode,20,20,20,20)
+        opos = cubepos[:]
+        cube_begin_pos = cubepos[:]
+       
+        c_plr_x,c_plr_y = cubepos
+        cube_switched = False
+        if bluep[-1] and orangep[-1] and (t.time() - cube_last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
+            #switched = False
+            cube_outways = None
+    ##        
+            if hypot(c_plr_x+25-bluep[0][0], c_plr_y+25-bluep[0][1]) < 45:
+                cubepos = orangep[0]
+                cube_switched= True
+                cube_outways = orangep[-1] #direction it is facing
+    ##            
+            elif hypot(c_plr_x+25-orangep[0][0], c_plr_y+25-orangep[0][1]) < 45:
+                cubepos = bluep[0]
+                cube_switched= True
+                cube_outways = bluep[-1]
+    ##        
+            if cube_switched:
+                cube_last_tp = t.time()
+                c_de_x = cube_begin_pos[0]- cube_startpos[0]
+                c_de_y = cube_begin_pos[1] - cube_startpos[1]
+    ##            
+                cube_categories = {"Right":True, "Left":True, "Up": False, "Down": False}
+                c_tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[cube_outways]
+    ##
+    ##            
+                cubepos = [cubepos[0] + c_tele_adjust[0], cubepos[1] + c_tele_adjust[1]]
+    ##            
+                c_quadrant_adjust = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]}[cube_outways] #adjusts where to teleport in quadrants
+    ##
+                if cube_categories[bluep[-1]] == cube_categories[orangep[-1]]: #Just changing one component
+    ##                
+    ##
+                    if bluep[-1] == orangep[-1]: #Same one, inverse that component
+    ##
+                        c_ddx, c_ddy = c_quadrant_adjust[0](c_de_x), c_quadrant_adjust[1](c_de_y) #if on same wall got to make it push 180 the other portal
+                        cube_forced_end = [ddx, ddy, 10]
+    ##
+                    else: #Opposite direction, keep it identical
+                        cube_forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
+    ##                    
+                else: #Changing both components
+                    c_de_x, c_de_y = c_de_y, c_de_x #Reverse them
+                    c_ddx, c_ddy = c_quadrant_adjust[0](c_de_x), c_quadrant_adjust[1](c_de_y) 
+                    cube_forced_end = [c_ddx, c_ddy, 10]
+    ##            
+    ##            
+    ####            if floatingmode == True:
+    ####                if outways == "Right":
+    ####                    playerpos[0] += 15
+    ####                elif outways == "Left":
+    ####                    playerpos[0] -= 15
+        npos=cubepos[:]
+    ##    #playerpos=collide(oldpos,newpos,map_grid)
+    ##
+        
+        if jumpBlock(opos,npos,20,20):
+            cube_state=state_change(state,True,keys[K_d],keys[K_a])
+            grav_velocity2=-20 #a negative gravity makes it go up
+    ##        
+        if launch(opos,npos,20,20) == 'right':
+            grav_velocity2 = -20
+            c_xchange = -20
+            cube_mode = 'launchingright'
+    ##        
+        if launch(opos,npos,20,20) == 'left':
+            grav_velocity2 = -20
+            c_xchange = -20
+            cube_mode = 'launchingleft'
+    ##        
+        if cube_mode =='launchingright': #if nothing in forced_end
+            cubepos=list(cubepos)
+            cubepos[1] += grav_velocity2
+            cubepos[0] -= c_xchange
+            grav_velocity2+=0.75
+            npos=cubepos[:]
+            cubepos=collide(opos,npos,map_grid,floatingmode,20,20,20,20)
+    ##        
+        if cube_mode == 'launchingleft':
+            cubepos=list(cubepos)
+            cubepos[1] += grav_velocity2
+            cubepos[0] += c_xchange
+            grav_velocity2+=0.75
+            npos=cubepos[:]
+            cubepos=collide(opos,npos,map_grid,floatingmode,20,20,20,20) #VERY LAST LINE
+
+            opos = cubepos[:]
+            cube_begin_pos = cubepos[:]
+            c_plr_x,c_plr_y = cubepos
+            cube_switched = False
+            if bluep[-1] and orangep[-1] and (t.time() - cube_last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
+                #switched = False
+                cube_outways = None
+        ##        
+                if hypot(c_plr_x+25-bluep[0][0], c_plr_y+25-bluep[0][1]) < 45:
+                    cubepos = orangep[0]
+                    cube_switched= True
+                    cube_outways = orangep[-1] #direction it is facing
+        ##            
+                elif hypot(c_plr_x+25-orangep[0][0], c_plr_y+25-orangep[0][1]) < 45:
+                    cubepos = bluep[0]
+                    cube_switched= True
+                    cube_outways = bluep[-1]
+        ##        
+                if cube_switched:
+                    cube_last_tp = t.time()
+                    c_de_x = cube_begin_pos[0]- cube_startpos[0]
+                    c_de_y = cube_begin_pos[1] - cube_startpos[1]
+        ##            
+                    cube_categories = {"Right":True, "Left":True, "Up": False, "Down": False}
+                    c_tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[cube_outways]
+        ##
+        ##            
+                    cubepos = [cubepos[0] + c_tele_adjust[0], cubepos[1] + c_tele_adjust[1]]
+        ##            
+                    c_quadrant_adjust = {"Right": [abs, float], "Left": [rev_abs, float], "Up": [float, rev_abs], "Down": [float, abs]}[cube_outways] #adjusts where to teleport in quadrants
+        ##
+                    if cube_categories[bluep[-1]] == cube_categories[orangep[-1]]: #Just changing one component
+        ##                
+        ##
+                        if bluep[-1] == orangep[-1]: #Same one, inverse that component
+        ##
+                            c_ddx, c_ddy = c_quadrant_adjust[0](c_de_x), c_quadrant_adjust[1](c_de_y) #if on same wall got to make it push 180 the other portal
+                            cube_forced_end = [ddx, ddy, 10]
+        ##
+                        else: #Opposite direction, keep it identical
+                            cube_forced_end = [de_x, de_y, 10] #if opposite walls just change the playerpos, no quadrant changing needed
+        ##                    
+                    else: #Changing both components
+                        c_de_x, c_de_y = c_de_y, c_de_x #Reverse them
+                        c_ddx, c_ddy = c_quadrant_adjust[0](c_de_x), c_quadrant_adjust[1](c_de_y) 
+                        cube_forced_end = [c_ddx, c_ddy, 10]
+        ##            
+        ##            
+        ####            if floatingmode == True:
+        ####                if outways == "Right":
+        ####                    playerpos[0] += 15
+        ####                elif outways == "Left":
+        ####                    playerpos[0] -= 15
+            npos=cubepos[:]
+        ##    #playerpos=collide(oldpos,newpos,map_grid)
+        ##
+
+            if jumpBlock(opos,npos,20,20):
+                cube_state=state_change(state,True,keys[K_d],keys[K_a])
+                grav_velocity2=-20 #a negative gravity makes it go up
+        ##        
+            if launch(opos,npos,20,20) == 'right':
+                grav_velocity2 = -20
+                c_xchange = -20
+                cube_mode = 'launchingright'
+        ##        
+            if launch(opos,npos,20,20) == 'left':
+                grav_velocity2 = -20
+                c_xchange = -20
+                cube_mode = 'launchingleft'
+        ##        
+            if cube_mode =='launchingright': #if nothing in forced_end
+                cubepos=list(cubepos)
+                cubepos[1] += grav_velocity2
+                cubepos[0] -= c_xchange
+                grav_velocity2+=0.75
+                npos=cubepos[:]
+                cubepos=collide(opos,npos,map_grid,20,20,20,20)
+        ##        
+            if cube_mode == 'launchingleft':
+                cubepos=list(cubepos)
+                cubepos[1] += grav_velocity2
+                cubepos[0] += c_xchange
+                grav_velocity2+=0.75
+                npos=cubepos[:]
+                cubepos=collide(opos,npos,map_grid,20,20,20,20)
+        
+        return cubepos,cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end,cube_mode,c_xchange,cube_floatingmode,holding
+
+
+    def holding_cube(dist,facing,holding,cubepos,playerpos):
+        
+        if dist<=63:
+            if keys[K_e]:
+                holding=True
+                if keys[K_d]:
+                    facing=0
+                if keys[K_a]:
+                    facing=1
+                if facing==0:
+                    cubepos[0]=playerpos[0]+43
+                    cubepos[1]=playerpos[1]+9
+                if facing==1:
+                    cubepos[1]=playerpos[1]+9
+                    cubepos[0]=playerpos[0]-13
+                return holding,cubepos
+        return holding,cubepos
+    
+    def move(playerpos,state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing,cubepos,holding):
         '''Moves the player, including jumping. Also accounts for velocity gained from gravity.
     Also includes the moving of player concerning portals.'''
          
         playerpos=list(playerpos)
         startpos = playerpos[:]
+        holding=False
+        holding,cubepos=holding_cube(hypot((playerpos[0]+6-cubepos[0]),(playerpos[1]-cubepos[1])),direction_face,holding,cubepos,playerpos)
         
         if keys[K_d] and not forced_end and mode != "launchingright" and mode != "launchingleft":
             playerpos=list(playerpos)
-            playerpos[0]+=5
+            prect=Rect(playerpos[0]+28,playerpos[1],11,60)
+            crect=Rect(cubepos[0],cubepos[1],1,20)
+            if prect.colliderect(crect):
+                playerpos[0]+=2
+                cubepos[0]+=2
+            else:
+                playerpos[0]+=5
             newpos=playerpos[:]
-            playerpos=collide(oldpos,newpos,map_grid,floatingmode)
+            playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
 
         if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
             playerpos=list(playerpos)
-            playerpos[0]-=5
+            prect=Rect(playerpos[0]+9,playerpos[1],11,60)
+            crect=Rect(cubepos[0]+19,cubepos[1],1,22)
+            if prect.colliderect(crect):
+                playerpos[0]-=2
+                cubepos[0]-=2
+            else:
+                playerpos[0]-=5
             newpos=playerpos[:]
-            playerpos=collide(oldpos,newpos,map_grid,floatingmode)
+            playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
 
         newpos=playerpos[:]
-        playerpos=collide(oldpos,newpos,map_grid,floatingmode)
+        playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
         oldpos = playerpos[:]
         
         if state=='jump' and not forced_end: #if nothing in forced_end
@@ -204,7 +475,7 @@ def Main():
             playerpos[1]+=grav_velocity
             grav_velocity+=0.75
             newpos=playerpos[:]
-            playerpos=collide(oldpos,newpos,map_grid,floatingmode)
+            playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
             if playerpos==oldpos and oldpos[1]<newpos[1]: #this checks if player is coming down from jump//nothing is effecting  except gravity
                 state, mode=state_change(state,False,False,False,mode)
 
@@ -223,7 +494,7 @@ def Main():
                 playerpos[0] -= 15         
             
         newpos=playerpos[:]
-        playerpos=collide(oldpos,newpos,map_grid,floatingmode)
+        playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
 
         oldpos = playerpos[:]
         
@@ -283,23 +554,23 @@ def Main():
         newpos=playerpos[:]
         #playerpos=collide(oldpos,newpos,map_grid)
 
-        if not switched and collide(oldpos,[oldpos[0],oldpos[1]+1],map_grid,floatingmode)==[oldpos[0],oldpos[1]+1] and state!='jump': #is gravity when player isn't jumping//checks if a pixel beneath is vacant or not
+        if not switched and collide(oldpos,[oldpos[0],oldpos[1]+1],map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])==[oldpos[0],oldpos[1]+1] and state!='jump': #is gravity when player isn't jumping//checks if a pixel beneath is vacant or not
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=0
         if keys[K_w] and state!='jump':
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=-8 #a negative gravity makes it go up
             
-        if jumpBlock(oldpos,newpos) and keys[K_w]:
+        if jumpBlock(oldpos,newpos,pl,pw) and keys[K_w]:
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=-20 #a negative gravity makes it go up
             
-        if launch(oldpos,newpos) == 'right':
+        if launch(oldpos,newpos,pl,pw) == 'right':
             grav_velocity = -20
             xchange = -20
             mode = 'launchingright'
             
-        if launch(oldpos,newpos) == 'left':
+        if launch(oldpos,newpos,pl,pw) == 'left':
             grav_velocity = -20
             xchange = -20
             mode = 'launchingleft'
@@ -310,7 +581,7 @@ def Main():
             playerpos[0] -= xchange
             grav_velocity+=0.75
             newpos=playerpos[:]
-            playerpos=collide(oldpos,newpos,map_grid,floatingmode)
+            playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
             
         if mode == 'launchingleft':
             playerpos=list(playerpos)
@@ -318,9 +589,9 @@ def Main():
             playerpos[0] += xchange
             grav_velocity+=0.75
             newpos=playerpos[:]
-            playerpos=collide(oldpos,newpos,map_grid,floatingmode)
+            playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
             
-        return playerpos,state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing
+        return playerpos,state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing,cubepos,holding
 
     def bullet_collide(pos):
         pos_rect=Rect(pos[0]-8,pos[1]-8,16,16)
@@ -337,11 +608,16 @@ def Main():
 
     def rev_abs(num):
         return abs(num)*-1
-    def collide(oldpos,newpos,grid,floatingmode):
+    def collide(oldpos,newpos,grid,floatingmode,pl,pw,cx,cy):
         'Checks if the new position is vacant, if not, will return the old position'
-
-        new_rect=Rect(newpos[0],newpos[1],pl,pw)
         
+        if pl!=20 and pw!=20:
+            new_rect=Rect(newpos[0]+14,newpos[1],pl-29,pw)
+            crect=Rect(cx,cy,20,20)
+            
+            if crect.colliderect(new_rect):
+                return oldpos
+        new_rect=Rect(newpos[0],newpos[1],pl,pw)
         for wall in wall_rects:
             if wall.colliderect(new_rect):
                 floatingmode = False
@@ -372,13 +648,21 @@ def Main():
                 return oldpos
         return newpos
 
-    def jumpBlock(oldpos,newpos):
-        new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
+    def jumpBlock(oldpos,newpos,pl,pw):
+    
+        if pl!=20:
+            
+            new_rect=Rect(newpos[0]+14,newpos[1],pl-29,pw+1)
+        else:
+            new_rect=Rect(newpos[0],newpos[1],pl,pw)
         for b in blockList:
             if b.colliderect(new_rect):
                 return True
-    def launch(oldpos,newpos):
-        new_rect = Rect(newpos[0],newpos[1]+1,pl,pw)
+    def launch(oldpos,newpos,length,width):
+        if length!=20:
+            new_rect=Rect(newpos[0]+14,newpos[1],length-29,width+1)
+        else:
+            new_rect=Rect(newpos[0],newpos[1],length,width+1)
         for p in launchPad:
             if p.colliderect(new_rect):
                 return 'right'
@@ -459,8 +743,9 @@ def Main():
 
     #----MOVING----------------------------------
         
-        (px,py),state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing)
-        
+        (px,py),state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing,(cx,cy),holding=move([px,py],state,grav_velocity,oldpos,last_tp,forced_end,mode,xchange,floatingmode,face,changing,[cx,cy],holding)
+    
+        (cx,cy),cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end,cube_mode,c_xchange,cube_floatingmode,holding=cubemove([cx,cy],cube_state,grav_velocity2,opos,cube_last_tp,cube_forced_end,cube_mode,c_xchange,cube_floatingmode,holding)
 
     #----SHOOTING--------------------------------
         if b_click:
@@ -506,7 +791,7 @@ def Main():
             levelindex += 1
             map_grid = loadMap(levels[levelindex])
             wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py = reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py)
-            time.sleep(0.5)
+            t.sleep(0.5)
         display.flip()
     
     return operation
