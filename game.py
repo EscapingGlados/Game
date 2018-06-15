@@ -14,12 +14,15 @@ def Main():
     mixer.music.play()
     brick = transform.scale(image.load('surface2.bmp'),(10,10))
     block = transform.scale(image.load('block.png'),(10,10))
+    launchLeft = transform.scale(image.load('launch_left_block.png'),(10,10))
+    launchRight = transform.scale(image.load('launch_right_block.png'),(10,10))
+    jumpUp = transform.scale(image.load('jump_block.png'),(10,10))
     level1=image.load('Level_1_final.png')
     level2=image.load('Level_2_final.png')
     level3=image.load('Level_3_final.png')
     level4=image.load('Level_4_final.png')
     level5=image.load('Level_5_final.png')
-    
+    jump_sound=mixer.Sound('jump.wav')
     cube=transform.scale(image.load('comp_cube.png'),(20,20))
     bluep_sprite=[]
     for i in range(4):
@@ -38,18 +41,18 @@ def Main():
             return [[0]*60 for x in range(80)]
 
 
-    levels = ["level1Real","level2Real","level3.p","level4.p","level5.p"]
+    levels = ["level1Real","level2Real","level3Real","level4.p","level5.p"]
     levelindex = 0
     
     map_grid = loadMap(levels[levelindex])
-    wall_rects=[]
-    wall2_rects = []
-    blockList = []
+    wall_rects=[]#regular walls - can shoot on
+    wall2_rects = []#regular walls -cant shoot on
+    blockList = []#launchpad up
     launchPad = []#right shooting
     launchPad2 = []#left shooting
     shield = []#blue shields
-    death = []
-    startposes = [[100,450],[100,450],[100,450],[100,450],[100,450]]
+    death = []#death blocks - not used
+    startposes = [[100,450],[100,450],[100,450],[100,450],[100,450]]#starting positions for each level
     for x in range(80):
         for y in range(60):
             c = map_grid[x][y]
@@ -92,18 +95,15 @@ def Main():
     screen_p=[]
     changing = 0
 
-##    def drawback(screen):
-##        'Draws the bricks/platforms of the level'
-##        for w in wall_rects:
-##            screen.blit(brick,(w[0],w[1]))
-##        for l in wall2_rects:
-##            screen.blit(block,(l[0],l[1]))
-##        for b in blockList:
-##            draw.rect(screen,(255,0,0),(b[0],b[1],10,10))
-##        for p in launchPad:
-##            draw.rect(screen,(65,65,65),(p[0],p[1],10,10))
-##        for x in launchPad2:
-##            draw.rect(screen,(0,0,255),(x[0],x[1],10,10))
+    def drawback(screen):
+        'Draws the bricks/platforms of the level'
+
+        for b in blockList:
+            screen.blit(jumpUp,(b[0],b[1]))
+        for p in launchPad:
+            screen.blit(launchRight,(p[0],p[1]))
+        for x in launchPad2:
+            screen.blit(launchLeft,(x[0],x[1]))
 ##        for s in shield:
 ##            draw.rect(screen,(0,255,255),(s[0],s[1],10,10))
 ##        draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
@@ -596,6 +596,8 @@ def Main():
             grav_velocity=0
 
         if keys[K_w] and state!='jump':#CHANGES STATE TO JUMP IF W IS CLICKED
+            jump_sound.play()
+
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=-8 #a negative gravity makes it go up
             
@@ -766,6 +768,10 @@ def Main():
     oldpos=[px,py]
     ang=0
     while running:
+        #for e in event.get():
+         #   if e.type==next_song_notify:
+          #      mixer.music.load('song.wav')
+           #     mixer.music.play()
         b_click=False
         o_click=False
         keys=key.get_pressed()
@@ -841,8 +847,8 @@ def Main():
         if orangep[-1] != None and hit1:
             ang=portal_rotation(orangep[0])
             screen.blit(transform.rotate(orangep_sprite[int(orange_frame)%3],ang),(orangep[0][0]-orangep_sprite[int(orange_frame)%3].get_width()//2,orangep[0][1]-orangep_sprite[int(orange_frame)%3].get_height()//2))
-           
-        screen.blit(cube,(cx,cy))
+        drawback(screen)
+ #       screen.blit(cube,(cx,cy))
         frame+=1
 
         blue_frame+=0.3
