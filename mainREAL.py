@@ -1,4 +1,7 @@
-#main
+#mainReal.py
+#Aaryan & Feeda
+#2D portal game. It's like a platformer with portals
+
 import menu  
 import editTest  
 import game
@@ -6,8 +9,6 @@ import load
 import testingLevel
 import loadTest
 
-#ESCAPING GLADOS
-#BY AARYAN PATEL AND FEEDA ELAHRESH
 running = True
 operation = 'intro'
 levelName = ''

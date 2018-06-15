@@ -3,11 +3,14 @@ from math import *
 import time as t
 import os
 import pickle
-
+mixer.init()
 def Main():
     running = True
     screen = display.set_mode((800,600))
-
+    
+    
+    theme=mixer.music.load('song.wav')
+    mixer.music.play()
     brick = transform.scale(image.load('surface2.bmp'),(10,10))
     block = transform.scale(image.load('block.png'),(10,10))
     level1=image.load('Level_1_final.png')
@@ -15,7 +18,7 @@ def Main():
     level3=image.load('Level_3_final.png')
     level4=image.load('Level_4_final.png')
     level5=image.load('Level_5_final.png')
-    
+    jump_sound=mixer.Sound('jump.wav')
     cube=transform.scale(image.load('comp_cube.png'),(20,20))
     bluep_sprite=[]
     for i in range(4):
@@ -34,7 +37,7 @@ def Main():
             return [[0]*60 for x in range(80)]
 
 
-    levels = ["level1Real","level2Real","level3.p","level4.p","level5.p"]
+    levels = ["level1Real","level2","level3.p","level4.p","level5.p"]
     levelindex = 0
     
     map_grid = loadMap(levels[levelindex])
@@ -44,8 +47,6 @@ def Main():
     launchPad = []#right shooting
     launchPad2 = []#left shooting
     shield = []#blue shields
-    death = []
-    startposes = [[100,450],[100,450],[100,450],[100,450],[100,450]]
     for x in range(80):
         for y in range(60):
             c = map_grid[x][y]
@@ -63,14 +64,12 @@ def Main():
                 shield.append(Rect((x*10,y*10,10,10)))
             if c == 7:
                 endpoint = [x*10,y*10]
-            if c == 8:
-                death.append(Rect((x*10,y*10,10,10)))
     portal_state='idle'
     state='idle'
     mode = 'idle'
 
     pl,pw=[50,60] #player length and width
-    px,py=[startposes[levelindex][0],startposes[levelindex][1]] 
+    px,py=[100,450] 
 
     hit = None
     hit1 = None         
@@ -103,13 +102,10 @@ def Main():
 ##        for s in shield:
 ##            draw.rect(screen,(0,255,255),(s[0],s[1],10,10))
 ##        draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
-##    def deathFunc(pos):
-##        new_rect=Rect(pos[0],pos[1],pl,pw)
-##        for d in death:
-##            if d.colliderect(new_rect):
-##                px,py = startposes[levelindex][0],startposes[levelindex][1]
-##            
+
+
     def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing):
+
 
         wall_rects=[]
         wall2_rects = []
@@ -294,7 +290,7 @@ def Main():
                 c_de_y = cube_begin_pos[1] - cube_startpos[1]
     ##            
                 cube_categories = {"Right":True, "Left":True, "Up": False, "Down": False}
-                c_tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 30]}[cube_outways]
+                c_tele_adjust = {"Right": [50,-25], "Left": [-50,-25], "Up": [-25, -50], "Down": [-25, 50]}[cube_outways]
     ##
     ##            
                 cubepos = [cubepos[0] + c_tele_adjust[0], cubepos[1] + c_tele_adjust[1]]
@@ -475,7 +471,7 @@ def Main():
         holding,cubepos=holding_cube(hypot((playerpos[0]+6-cubepos[0]),(playerpos[1]-cubepos[1])),direction_face,holding,cubepos,playerpos)
         
         if keys[K_d] and not forced_end and mode != "launchingright" and mode != "launchingleft":
-            playerpos=list(playerpos)#SIMPLE MOVING LEFT AND RIGHT
+            playerpos=list(playerpos)
             prect=Rect(playerpos[0]+28,playerpos[1],11,60)
             crect=Rect(cubepos[0],cubepos[1],1,20)
             if prect.colliderect(crect):
@@ -484,7 +480,7 @@ def Main():
             else:
                 playerpos[0]+=5
             newpos=playerpos[:]
-            playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])#CHECKING FOR COLLISIONS
+            playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
 
         if keys[K_a] and not forced_end and mode != "launchingright" and mode != "launchingleft":
             playerpos=list(playerpos)
@@ -498,14 +494,15 @@ def Main():
             newpos=playerpos[:]
             playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
 
-        newpos=playerpos[:]#UPDATING POS
+        newpos=playerpos[:]
         playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
         oldpos = playerpos[:]
         
-        if state=='jump' and not forced_end: #if nothing in forced_end - JUMPING
+        if state=='jump' and not forced_end: #if nothing in forced_end
+            
             playerpos=list(playerpos)
             playerpos[1]+=grav_velocity
-            grav_velocity+=0.75 #INCREASING BY .75 - "GRAVITY"
+            grav_velocity+=0.75
             newpos=playerpos[:]
             playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
             if playerpos==oldpos and oldpos[1]<newpos[1]: #this checks if player is coming down from jump//nothing is effecting  except gravity
@@ -589,7 +586,8 @@ def Main():
         if not switched and collide(oldpos,[oldpos[0],oldpos[1]+1],map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])==[oldpos[0],oldpos[1]+1] and state!='jump': #is gravity when player isn't jumping//checks if a pixel beneath is vacant or not
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=0
-        if keys[K_w] and state!='jump':#CHANGES STATE TO JUMP IF W IS CLICKED
+        if keys[K_w] and state!='jump':
+            jump_sound.play()
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=-8 #a negative gravity makes it go up
             
@@ -597,9 +595,9 @@ def Main():
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=-20 #a negative gravity makes it go up
             
-        if launch(oldpos,newpos,pl,pw) == 'right':#CHECKS IF PLAYER IS OVER A RIGHT SHOOTING LAUNCHPAD
+        if launch(oldpos,newpos,pl,pw) == 'right':
             grav_velocity = -20
-            xchange = -20# same as gravity but for x direction
+            xchange = -20
             mode = 'launchingright'
             
         if launch(oldpos,newpos,pl,pw) == 'left':
@@ -607,10 +605,10 @@ def Main():
             xchange = -20
             mode = 'launchingleft'
  #       print(mode)
-        if mode =='launchingright': 
+        if mode =='launchingright': #if nothing in forced_end
             playerpos=list(playerpos)
             playerpos[1] += grav_velocity
-            playerpos[0] -= xchange#x change for gravity
+            playerpos[0] -= xchange
             grav_velocity+=0.75
             newpos=playerpos[:]
             playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
@@ -730,13 +728,13 @@ def Main():
         portal = bullet[:]
         if portal[-1] == None and portal != [None]:
             distance = portal[-2]
-            x_pos = int(portal[0][0]+distance*cos(portal[-3]))#getting angles
+            x_pos = int(portal[0][0]+distance*cos(portal[-3]))
             y_pos = int(portal[0][1]+distance*sin(portal[-3]))
-            if bullet_collide([x_pos,y_pos]):#when colliding with a wall...
+            if bullet_collide([x_pos,y_pos]):
                 changes = 1
                 while True:
                     x = int(x_pos - cos(portal[-3])*changes)
-                    y = int(y_pos - sin(portal[-3])*changes)#move pixles backwards until collision is matched perfectly with border of wall
+                    y = int(y_pos - sin(portal[-3])*changes)
                     changes+=1
                     if bullet_collide([x,y]) == False:
                         portal[-1] = facing(x,y)
@@ -760,12 +758,17 @@ def Main():
     oldpos=[px,py]
     ang=0
     while running:
+  
+            
         b_click=False
         o_click=False
         keys=key.get_pressed()
         mb=mouse.get_pressed()
         mx,my=mouse.get_pos()
         for e in event.get():
+            if e.type==next_song_notify:
+                mixer.music.load('song.wav')
+                mixer.music.play()
             if e.type==QUIT:
                 operation = 'exit'
                 running=False
@@ -799,7 +802,7 @@ def Main():
 
     #----SHOOTING--------------------------------
         if b_click:
-            bluep=[[px+25,py+25],atan2(my-(py+25), mx-(px+25)),1,None]#activating blue portal
+            bluep=[[px+25,py+25],atan2(my-(py+25), mx-(px+25)),1,None]
         if (state=='idle' or state=='jump') and ((not keys[K_a] and not keys[K_d]) or (keys[K_a] and keys[K_d])):
             screen.blit(idle[direction_face],(px,py))
             
@@ -811,7 +814,7 @@ def Main():
             orangep=[None]
 
         if o_click:
-            orangep=[[px+25,py+25],atan2(my-(py+25), mx-(px+25)),1,None]#activating orange portal
+            orangep=[[px+25,py+25],atan2(my-(py+25), mx-(px+25)),1,None]
 
         orangep,hit,hit1 = shooting(orangep, (252,69,2),hit,hit1)
         if bluep!=[None] and orangep!=[None] :
@@ -845,9 +848,8 @@ def Main():
 
         orange_frame+=0.3
 
-        if py > 600:
-            px,py = 100,450
- #       deathFunc((px,py))
+
+
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
      #   print(hypot(endpoint[0]-px,endpoint[1]-py))
