@@ -6,7 +6,7 @@ from math import *
 import time
 import glob
 
-def Main():
+def Main(lev):
     showing = True
     typing = False
     loadingScreen = False
@@ -50,7 +50,7 @@ def Main():
 
     current = 1
     back = image.load("checking_level1.png")
-    level = loadMap(str(levelName))
+    level = loadMap(str(lev))
     colz = (255,0,0)
     buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False],[470,False]]
 
@@ -92,7 +92,7 @@ def Main():
             if keys[K_ESCAPE]:
                 typing = False
         for i in range(8):
-            if keys[i+48]:
+            if keys[i+48] and not typing:
                 if i < 1 or i > 7:
                     pass
                 else:
