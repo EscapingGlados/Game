@@ -5,7 +5,6 @@ import game
 
 
 running = True
-main = menu.Main()
 operation = 'intro'
 
 while running:
@@ -15,4 +14,7 @@ while running:
         running = False
     elif operation == 'game':
         operation = game.Main()
+    elif operation == 'edit':
+        operation = editTest.Main()
 quit()
+

@@ -65,6 +65,7 @@ def Main():
         click = False
         for e in event.get():                
             if e.type == QUIT:
+                operation = 'exit'
                 running = False
 
             if e.type == MOUSEBUTTONDOWN:
@@ -159,4 +160,4 @@ def Main():
                            
         display.flip()
 
-    quit()
+    return operation
