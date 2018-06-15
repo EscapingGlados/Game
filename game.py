@@ -101,8 +101,11 @@ def Main():
 ##        draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing):
 =======
+=======
+>>>>>>> parent of b9c294a... shit
     def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py):
 >>>>>>> parent of b9c294a... shit
 
@@ -834,9 +837,12 @@ def Main():
         blue_frame+=0.3
 =======
         blue_frame+=0.3
+<<<<<<< HEAD
         orange_frame+=0.3
 
 >>>>>>> 5c41c33bb03f8ca69dc9424685f6b5c1ceb09252
+=======
+>>>>>>> parent of b9c294a... shit
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
      #   print(hypot(endpoint[0]-px,endpoint[1]-py))
