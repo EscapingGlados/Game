@@ -516,7 +516,7 @@ def Main():
         plr_x,plr_y = playerpos
         
         switched = False
-        if bluep[-1] and orangep[-1] and (time.time() - last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
+        if bluep[-1] and orangep[-1] and (t.time() - last_tp>0.5 or abs(bluep[0][0]-orangep[0][0])<15) : #checks if there is a portal
             #switched = False
             outways = None
             
@@ -531,7 +531,7 @@ def Main():
                 outways = bluep[-1]
             
             if switched:
-                last_tp = time.time()
+                last_tp = t.time()
                 de_x = begin_pos[0]- startpos[0]
                 de_y = begin_pos[1] - startpos[1]
                 
