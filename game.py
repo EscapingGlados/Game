@@ -10,7 +10,12 @@ def Main():
 
     brick = transform.scale(image.load('surface2.bmp'),(10,10))
     block = transform.scale(image.load('block.png'),(10,10))
-    backg=image.load('checking_level1.png')
+    level1=image.load('Level_1_final.png')
+    level2=image.load('Level_2_final.png')
+    level3=image.load('Level_3_final.png')
+    level4=image.load('Level_4_final.png')
+    level5=image.load('Level_5_final.png')
+    
     cube=transform.scale(image.load('comp_cube.png'),(20,20))
     bluep_sprite=[]
     for i in range(4):
@@ -29,7 +34,7 @@ def Main():
             return [[0]*60 for x in range(80)]
 
 
-    levels = ["level1","level2","level3.p","level4.p","level5.p"]
+    levels = ["level1Real","level2","level3.p","level4.p","level5.p"]
     levelindex = 0
     
     map_grid = loadMap(levels[levelindex])
@@ -79,6 +84,7 @@ def Main():
     screen_p=[]
     changing = 0
 
+<<<<<<< HEAD
     def drawback(screen):
         'Draws the bricks/platforms of the level'
         for w in wall_rects:
@@ -96,6 +102,32 @@ def Main():
         draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
 
     def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py):
+=======
+##    def drawback(screen):
+##        'Draws the bricks/platforms of the level'
+##        for w in wall_rects:
+##            screen.blit(brick,(w[0],w[1]))
+##        for l in wall2_rects:
+##            screen.blit(block,(l[0],l[1]))
+##        for b in blockList:
+##            draw.rect(screen,(255,0,0),(b[0],b[1],10,10))
+##        for p in launchPad:
+##            draw.rect(screen,(65,65,65),(p[0],p[1],10,10))
+##        for x in launchPad2:
+##            draw.rect(screen,(0,0,255),(x[0],x[1],10,10))
+##        for s in shield:
+##            draw.rect(screen,(0,255,255),(s[0],s[1],10,10))
+##        draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+    def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing):
+=======
+=======
+>>>>>>> parent of b9c294a... shit
+    def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py):
+>>>>>>> parent of b9c294a... shit
+>>>>>>> a5ab44d4ab0485f9f83ff869978c4d27d8a55a50
 
         wall_rects=[]
         wall2_rects = []
@@ -700,6 +732,10 @@ def Main():
             return -90
         if facing(pos[0],pos[1])=='Left':
             return 90
+<<<<<<< HEAD
+=======
+
+>>>>>>> a5ab44d4ab0485f9f83ff869978c4d27d8a55a50
     
     def shooting(bullet, col,hit,hit1):
          
@@ -734,6 +770,7 @@ def Main():
         return portal,hit,hit1
 
     oldpos=[px,py]
+    ang=0
     while running:
         b_click=False
         o_click=False
@@ -744,7 +781,6 @@ def Main():
             if e.type==QUIT:
                 operation = 'exit'
                 running=False
-                break
             elif e.type==MOUSEBUTTONDOWN and e.button==1:
                 b_click=True
             elif e.type==MOUSEBUTTONDOWN and e.button==3:
@@ -754,9 +790,16 @@ def Main():
             if keys[K_a]:
                 direction_face=1
 
-        screen.blit(backg,(0,0))
-        drawback(screen)
-        
+        if levelindex == 0:
+            screen.blit(level1,(0,0))
+        elif levelindex == 1:
+            screen.blit(level2,(0,0))
+        elif levelindex == 2:
+            screen.blit(level3,(0,0))
+        elif levelindex == 3:
+            screen.blit(level4,(0,0))
+        elif levelindex == 4:
+            screen.blit(level5,(0,0))
 
         
 
@@ -801,18 +844,25 @@ def Main():
             screen.blit(transform.rotate(bluep_sprite[int(blue_frame)%3],ang),(bluep[0][0]-bluep_sprite[int(blue_frame)%3].get_width()//2,bluep[0][1]-bluep_sprite[int(blue_frame)%3].get_height()//2))
 
         if orangep[-1] != None and hit1:
-            ang=portal_rotation(orangep[0])
-            screen.blit(transform.rotate(orangep_sprite[int(orange_frame)%3],ang),(orangep[0][0]-orangep_sprite[int(orange_frame)%3].get_width()//2,orangep[0][1]-orangep_sprite[int(orange_frame)%3].get_height()//2))
-
-
+            draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],8)
         screen.blit(cube,(cx,cy))
         frame+=1
+<<<<<<< HEAD
+
+        blue_frame+=0.3
+=======
         blue_frame+=0.3
 <<<<<<< HEAD
         orange_frame+=0.3
 
+<<<<<<< HEAD
 =======
 >>>>>>> parent of eb26659... k
+=======
+>>>>>>> 5c41c33bb03f8ca69dc9424685f6b5c1ceb09252
+=======
+>>>>>>> parent of b9c294a... shit
+>>>>>>> a5ab44d4ab0485f9f83ff869978c4d27d8a55a50
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
      #   print(hypot(endpoint[0]-px,endpoint[1]-py))

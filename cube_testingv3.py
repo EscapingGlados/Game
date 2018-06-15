@@ -610,7 +610,7 @@ def shooting(bullet, col):
     return portal
 
 oldpos=[px,py]
-
+ang=0
 while running:
     b_click=False
     o_click=False

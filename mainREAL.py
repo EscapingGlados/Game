@@ -18,7 +18,6 @@ while running:
     elif operation == 'exit':
         running = False
         
-        
     elif operation == 'game':
         operation = game.Main()
         
@@ -34,8 +33,7 @@ while running:
         
     elif operation == 'testingLevel':
         print("2")
-        operation = testingLevel(startingLevel)
+        operation = testingLevel.Main(startingLevel)
         
-    print(operation)
 quit()
 
