@@ -10,7 +10,9 @@ operation = 'intro'
 
 while running:
     if operation == 'intro':
-        menu.Main()
-    if operation == 'exit':
+        operation = menu.Main()
+    elif operation == 'exit':
         running = False
+    elif operation == 'game':
+        operation = game.Main()
 quit()

@@ -27,13 +27,20 @@ def Main():
         texts.append(image.load('B%s.png'%(i+1)))
 
     while running:
+        click = False
         for e in event.get():          
             if e.type == QUIT:
                 operation = 'exit'
-                return operation
+                running = False
+            if e.type == MOUSEBUTTONDOWN:
+                if e.button == 1:
+                    click = True
 
         mpos = mouse.get_pos()
         mb = mouse.get_pressed()
+        if click and Rect(rects[0][0],rects[0][1],208,53).collidepoint(mpos):
+            operation = 'game'
+            running = False
         
         screen.blit(menu_background,(0,0))
         screen.blit(door,(750,455))
@@ -58,8 +65,7 @@ def Main():
 
                     
         display.flip()
-    
-    quit()
+    return operation
 
 
 
