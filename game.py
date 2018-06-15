@@ -41,11 +41,8 @@ def Main():
             return [[0]*60 for x in range(80)]
 
 
-<<<<<<< HEAD
-    levels = ["level1Real","level2Real","level3Real","level4.p","level5.p"]
-=======
-    levels = ["level1Real","level2","level3.p","level4.p","level5.p"]
->>>>>>> 201f3a7a2830918fb905184a9ef19316b2c103b6
+    levels = ["level1Real","level2Real","level3Real","level4Real","level5Real"]
+
     levelindex = 0
     
     map_grid = loadMap(levels[levelindex])
@@ -55,11 +52,9 @@ def Main():
     launchPad = []#right shooting
     launchPad2 = []#left shooting
     shield = []#blue shields
-<<<<<<< HEAD
     death = []#death blocks - not used
-    startposes = [[100,450],[100,450],[100,450],[100,450],[100,450]]#starting positions for each level
-=======
->>>>>>> 201f3a7a2830918fb905184a9ef19316b2c103b6
+    startposes = [[100,450],[100,450],[100,450],[100,450],[100,150]]#starting positions for each level
+
     for x in range(80):
         for y in range(60):
             c = map_grid[x][y]
@@ -508,11 +503,8 @@ def Main():
         playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
         oldpos = playerpos[:]
         
-<<<<<<< HEAD
         if state=='jump' and not forced_end: #if nothing in forced_end - JUMPING
-=======
-        if state=='jump' and not forced_end: #if nothing in forced_end
->>>>>>> 201f3a7a2830918fb905184a9ef19316b2c103b6
+
             
             playerpos=list(playerpos)
             playerpos[1]+=grav_velocity
@@ -600,15 +592,10 @@ def Main():
         if not switched and collide(oldpos,[oldpos[0],oldpos[1]+1],map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])==[oldpos[0],oldpos[1]+1] and state!='jump': #is gravity when player isn't jumping//checks if a pixel beneath is vacant or not
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=0
-<<<<<<< HEAD
 
         if keys[K_w] and state!='jump':#CHANGES STATE TO JUMP IF W IS CLICKED
             jump_sound.play()
 
-=======
-        if keys[K_w] and state!='jump':
-            jump_sound.play()
->>>>>>> 201f3a7a2830918fb905184a9ef19316b2c103b6
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=-8 #a negative gravity makes it go up
             
