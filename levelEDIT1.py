@@ -48,8 +48,8 @@ col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,
 icons = ["nothing","nothing","nothing",left,right,up]
 
 current = 1
-back = image.load("Level_2_final.png")
-level = loadMap("level2Real")
+back = image.load("Level_5_final.png")
+level = loadMap("level5Real")
 colz = (255,0,0)
 buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False],[470,False],[540,False]]
 
