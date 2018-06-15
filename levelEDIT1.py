@@ -12,9 +12,9 @@ loadingScreen = False
 font.init()
 rekt = Rect(750,550,50,50)
 
-left = image.load("Assets/launch_left_block.png")
-right = image.load("Assets/launch_right_block.png")
-up = image.load("Assets/jump_block.png")
+left = image.load("launch_left_block.png")
+right = image.load("launch_right_block.png")
+up = image.load("jump_block.png")
 
 
 
@@ -48,12 +48,12 @@ col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,
 icons = ["nothing","nothing","nothing",left,right,up]
 
 current = 1
-back = image.load("Level_1_final.png")
-level = loadMap("level1Real")
+back = image.load("Level_2_final.png")
+level = loadMap("level2Real")
 colz = (255,0,0)
 buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False],[470,False]]
 
-upheav = font.Font("Assets/upheavtt.ttf",40)
+upheav = font.Font("upheavtt.ttf",40)
 name = ""
 running = True
 
