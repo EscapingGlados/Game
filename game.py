@@ -112,8 +112,8 @@ def Main():
     def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing):
 
 
-        wall_rects=[]
-        wall2_rects = []
+        wall_rects=[]#can shoot on
+        wall2_rects = []#cant shoot on
         blockList = []
         launchPad = []#right shooting
         launchPad2 = []#left shooting
@@ -616,7 +616,7 @@ def Main():
         if mode =='launchingright': #if nothing in forced_end
             playerpos=list(playerpos)
             playerpos[1] += grav_velocity
-            playerpos[0] -= xchange
+            playerpos[0] -= xchange#same as gravity but for x
             grav_velocity+=0.75
             newpos=playerpos[:]
             playerpos=collide(oldpos,newpos,map_grid,floatingmode,pl,pw,cubepos[0],cubepos[1])
@@ -862,8 +862,9 @@ def Main():
 
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
-     #   print(hypot(endpoint[0]-px,endpoint[1]-py))
-        if hypot(endpoint[0]-px,endpoint[1]-py) < 90:
+         #   print(hypot(endpoint[0]-px,endpoint[1]-py))
+        print(endpoint)
+        if hypot(endpoint[0]-px,endpoint[1]-py) < 80:
             levelindex += 1
             map_grid = loadMap(levels[levelindex])
             wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing = reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing)
