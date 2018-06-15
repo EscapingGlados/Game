@@ -507,6 +507,7 @@ def Main():
         oldpos = playerpos[:]
         
         if state=='jump' and not forced_end: #if nothing in forced_end - JUMPING
+            
             playerpos=list(playerpos)
             playerpos[1]+=grav_velocity
             grav_velocity+=0.75 #INCREASING BY .75 - "GRAVITY"
