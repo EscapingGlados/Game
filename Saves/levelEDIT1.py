@@ -11,7 +11,6 @@ typing = False
 loadingScreen = False
 font.init()
 rekt = Rect(750,550,50,50)
-loadRect = Rect(700,550,50,50)
 
 left = image.load("Assets/launch_left_block.png")
 right = image.load("Assets/launch_right_block.png")
@@ -49,10 +48,10 @@ col = [(0,0,0),(0,255,0),(255,255,255),(255,0,0),(0,0,255),(0,255,255),(175,119,
 icons = ["nothing","nothing","nothing",left,right,up]
 
 current = 1
-back = image.load("Assets/background.bmp")
-level = loadMap("boobs")
+back = image.load("Level_1_final.png")
+level = loadMap("level1Real")
 colz = (255,0,0)
-buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False]]
+buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False],[470,False]]
 
 upheav = font.Font("Assets/upheavtt.ttf",40)
 name = ""
@@ -89,20 +88,15 @@ while running:
     keys = key.get_pressed()                
     for i in range(8):
         if keys[i+48]:
-            if i < 1 or i > 6:
+            if i < 1 or i > 7:
                 pass
             else:
                 current = i
                 
-    if click and rekt.collidepoint((mx,my)):
+    if click and rekt.collidepoint((mx,my)) and showing:
         typing = True
 
-    if click and loadRect.collidepoint((mx,my)):
-        loadingScreen = True
-        picList = glob.glob("*")
         
-        print(picList)
-
         
     if mouse.get_pressed()[0] and typing == False and loadingScreen == False:
         gx = mx // 10
@@ -124,7 +118,7 @@ while running:
         
     buttons[current-1][1] = True
     
-    for i in range(6):
+    for i in range(7):
         if buttons[i] != buttons[current-1]:
             buttons[i][1] = False
         if buttons[i][1] == False:
@@ -140,20 +134,8 @@ while running:
         screen.blit(iconup,(buttons[2][0]+2,52))
                             
         draw.rect(screen,(0,0,255),rekt)
-        draw.rect(screen,(255,0,0),loadRect)
                 
-    if loadingScreen == True:
-        for i in range(len(picList)):
-            if Rect(200,50*i+200,600,50).collidepoint((mx,my)):
-                if click:
-                    print(picList[i])
-                    level = loadMap(picList[i])
-                    #print(level)
-                    loadingScreen = False
-                    time.sleep(0.05)
-                draw.rect(screen,(255,0,0),(200,50*i+200,400,50))
-                
-            text(picList[i],200,50*i+200)
+
                        
     display.flip()
 
