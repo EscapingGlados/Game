@@ -58,6 +58,9 @@ def Main():
         elif click and Rect(rects2[0][0],rects2[0][1],240,50).collidepoint(mpos) and blitMode == 'edit':
             operation = 'edit'
             running = False
+        elif click and Rect(rects2[1][0],rects2[1][1],240,50).collidepoint(mpos) and blitMode == 'edit':
+            operation = 'load'
+            running = False
             
         screen.blit(menu_background,(0,0))
         screen.blit(door,(750,455))

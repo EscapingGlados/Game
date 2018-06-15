@@ -50,7 +50,7 @@ def Main():
 
     current = 1
     back = image.load("checking_level1.png")
-    level = loadMap("level2")
+    level = loadMap(str(levelName))
     colz = (255,0,0)
     buttons = [[50,True],[120,False],[190,False],[260,False],[330,False],[400,False],[470,False]]
 

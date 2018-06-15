@@ -1,11 +1,13 @@
 #main
 import menu  
 import editTest  
-import game  
+import game
+import load
 
 
 running = True
 operation = 'intro'
+levelName = ''
 
 while running:
     if operation == 'intro':
@@ -16,5 +18,7 @@ while running:
         operation = game.Main()
     elif operation == 'edit':
         operation = editTest.Main()
+    elif operation == 'load':
+        operation,levelName = load.Main()
 quit()
 
