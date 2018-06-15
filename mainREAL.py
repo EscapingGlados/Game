@@ -2,6 +2,17 @@
 #Aaryan & Feeda
 #2D portal game. It's like a platformer with portals
 
+##############################Features####################################################
+#Portal gun can teleport player
+#Vector is maintained (force into portal can translate into whatever direction)
+#Pretty loading screen with moving sprites
+#Level Editor - Allows back-end workers to work on collisions of levels easier
+#User Level Editor - Allows user to play around in his/her own sandbox creative mode
+#Lets user save and load any 'levels' they created
+#Various blocks do different things (launchpad, left o 
+
+
+
 import menu  #imports our main menu file
 import editTest  #imports our editor for user's levels
 import game #imports games
