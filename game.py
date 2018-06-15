@@ -84,6 +84,25 @@ def Main():
     screen_p=[]
     changing = 0
 
+<<<<<<< HEAD
+    def drawback(screen):
+        'Draws the bricks/platforms of the level'
+        for w in wall_rects:
+            screen.blit(brick,(w[0],w[1]))
+        for l in wall2_rects:
+            screen.blit(block,(l[0],l[1]))
+        for b in blockList:
+            draw.rect(screen,(255,0,0),(b[0],b[1],10,10))
+        for p in launchPad:
+            draw.rect(screen,(65,65,65),(p[0],p[1],10,10))
+        for x in launchPad2:
+            draw.rect(screen,(0,0,255),(x[0],x[1],10,10))
+        for s in shield:
+            draw.rect(screen,(0,255,255),(s[0],s[1],10,10))
+        draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
+
+    def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py):
+=======
 ##    def drawback(screen):
 ##        'Draws the bricks/platforms of the level'
 ##        for w in wall_rects:
@@ -102,7 +121,16 @@ def Main():
 
 
     def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing):
+<<<<<<< HEAD
 
+=======
+=======
+=======
+>>>>>>> parent of b9c294a... shit
+    def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py):
+>>>>>>> parent of b9c294a... shit
+>>>>>>> a5ab44d4ab0485f9f83ff869978c4d27d8a55a50
+>>>>>>> ffaee0a4e6da12f24f70f72b3939cc607c4c653b
 
         wall_rects=[]
         wall2_rects = []
@@ -140,17 +168,8 @@ def Main():
         xchange = 0
         forced_end = False # [x change, y change, frames left]
         floatingmode = False
-        click=0
-        portal_delay=t.time()
-        b_collide=False
-        o_collide=False
-        bluep=[None]
-        orangep=[None]
-        screen_p=[]
-        changing = 0
-        
-        return wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing
 
+        return wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py
         
     last_tp = t.time()
 
@@ -716,7 +735,10 @@ def Main():
             return -90
         if facing(pos[0],pos[1])=='Left':
             return 90
+<<<<<<< HEAD
+=======
 
+>>>>>>> a5ab44d4ab0485f9f83ff869978c4d27d8a55a50
     
     def shooting(bullet, col,hit,hit1):
          
@@ -823,7 +845,10 @@ def Main():
         if bluep[-1] != None and hit:
             ang=portal_rotation(bluep[0])
             screen.blit(transform.rotate(bluep_sprite[int(blue_frame)%3],ang),(bluep[0][0]-bluep_sprite[int(blue_frame)%3].get_width()//2,bluep[0][1]-bluep_sprite[int(blue_frame)%3].get_height()//2))
+<<<<<<< HEAD
             draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],8)
+=======
+>>>>>>> ffaee0a4e6da12f24f70f72b3939cc607c4c653b
 
         if orangep[-1] != None and hit1:
             ang=portal_rotation(orangep[0])
@@ -838,15 +863,26 @@ def Main():
 
         orange_frame+=0.3
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> parent of eb26659... k
+=======
+>>>>>>> 5c41c33bb03f8ca69dc9424685f6b5c1ceb09252
+=======
+>>>>>>> parent of b9c294a... shit
+>>>>>>> a5ab44d4ab0485f9f83ff869978c4d27d8a55a50
+>>>>>>> ffaee0a4e6da12f24f70f72b3939cc607c4c653b
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
      #   print(hypot(endpoint[0]-px,endpoint[1]-py))
         if hypot(endpoint[0]-px,endpoint[1]-py) < 90:
             levelindex += 1
             map_grid = loadMap(levels[levelindex])
-            wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing = reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing)
+            wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py = reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py)
             t.sleep(0.5)
         display.flip()
     
