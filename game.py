@@ -12,6 +12,15 @@ def Main():
     block = transform.scale(image.load('block.png'),(10,10))
     backg=image.load('checking_level1.png')
     cube=transform.scale(image.load('comp_cube.png'),(20,20))
+    bluep_sprite=[]
+    for i in range(4):
+        bluep_sprite.append(transform.scale(image.load('bp%s.png'%(i)),(48,30)))
+    blue_frame=0
+
+    orangep_sprite=[]
+    for i in range(4):
+        orangep_sprite.append(transform.scale(image.load('op%s.png'%(i)),(48,30)))
+    orange_frame=0
     def loadMap(fname):
         if fname in os.listdir("."):
             myPFile = open(fname, "rb")
@@ -86,7 +95,7 @@ def Main():
             draw.rect(screen,(0,255,255),(s[0],s[1],10,10))
         draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
 
-    def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing):
+    def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py):
 
         wall_rects=[]
         wall2_rects = []
@@ -124,17 +133,8 @@ def Main():
         xchange = 0
         forced_end = False # [x change, y change, frames left]
         floatingmode = False
-        click=0
-        portal_delay=t.time()
-        b_collide=False
-        o_collide=False
-        bluep=[None]
-        orangep=[None]
-        screen_p=[]
-        changing = 0
-        
-        return wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing
 
+        return wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py
         
     last_tp = t.time()
 
@@ -691,7 +691,16 @@ def Main():
         elif bullet_collide((x,y-16)):
             return 'Down'
                 
-
+    def portal_rotation(pos):
+        if facing(pos[0],pos[1])=='Up':
+            return 0
+        if facing(pos[0],pos[1])=='Down':
+            return 180
+        if facing(pos[0],pos[1])=='Right':
+            return -90
+        if facing(pos[0],pos[1])=='Left':
+            return 90
+    
     def shooting(bullet, col,hit,hit1):
          
         portal = bullet[:]
@@ -788,7 +797,8 @@ def Main():
             screen.blit(backward[frame%24],(px,py))
 
         if bluep[-1] != None and hit:
-            draw.circle(screen,(8,131,219),[int(e) for e in bluep[0]],8)
+            ang=portal_rotation(bluep[0])
+            screen.blit(transform.rotate(bluep_sprite[int(blue_frame)%3],ang),(bluep[0][0]-bluep_sprite[int(blue_frame)%3].get_width()//2,bluep[0][1]-bluep_sprite[int(blue_frame)%3].get_height()//2))
 
         if orangep[-1] != None and hit1:
             ang=portal_rotation(orangep[0])
@@ -798,15 +808,18 @@ def Main():
         screen.blit(cube,(cx,cy))
         frame+=1
         blue_frame+=0.3
+<<<<<<< HEAD
         orange_frame+=0.3
 
+=======
+>>>>>>> parent of eb26659... k
         oldpos=[px,py]
         pRect = Rect(px,py,pl,pw)
      #   print(hypot(endpoint[0]-px,endpoint[1]-py))
         if hypot(endpoint[0]-px,endpoint[1]-py) < 90:
             levelindex += 1
             map_grid = loadMap(levels[levelindex])
-            wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing = reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing)
+            wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py = reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py)
             t.sleep(0.5)
         display.flip()
     
