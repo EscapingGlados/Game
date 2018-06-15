@@ -100,7 +100,11 @@ def Main():
 ##            draw.rect(screen,(0,255,255),(s[0],s[1],10,10))
 ##        draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
 
+<<<<<<< HEAD
     def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py,click,portal_delay,b_collide,o_collide,bluep,orangep,screen_p,changing):
+=======
+    def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py):
+>>>>>>> parent of b9c294a... shit
 
         wall_rects=[]
         wall2_rects = []
