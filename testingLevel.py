@@ -12,7 +12,6 @@ def Main(start):
     brick = transform.scale(image.load('surface2.bmp'),(10,10))
     block = transform.scale(image.load('block.png'),(10,10))
     backg=image.load('checking_level1.png')
-    cube=transform.scale(image.load('comp_cube.png'),(20,20))
     def loadMap(fname):
         if fname in os.listdir("."):
             myPFile = open(fname, "rb")
@@ -44,8 +43,7 @@ def Main(start):
                 launchPad2.append(Rect((x*10,y*10,10,10)))#launchpadleft
             if c == 6:
                 shield.append(Rect((x*10,y*10,10,10)))
-            if c == 7:
-                endpoint = [x*10,y*10]
+
     portal_state='idle'
     state='idle'
     mode = 'idle'
@@ -83,49 +81,8 @@ def Main(start):
             draw.rect(screen,(0,0,255),(x[0],x[1],10,10))
         for s in shield:
             draw.rect(screen,(0,255,255),(s[0],s[1],10,10))
-        draw.rect(screen,(255,100,100),(endpoint[0],endpoint[1],10,10))
 
-    def reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py):
-
-        wall_rects=[]
-        wall2_rects = []
-        blockList = []
-        launchPad = []#right shooting
-        launchPad2 = []#left shooting
-        shield = []#blue shields
-        for x in range(80):
-            for y in range(60):
-                c = map_grid[x][y]
-                if c == 1:
-                    wall_rects.append(Rect((x*10,y*10,10,10)))#nonclickable
-                if c == 2:
-                    wall2_rects.append(Rect((x*10,y*10,10,10)))#clickable
-                if c == 3:
-                    blockList.append(Rect((x*10,y*10,10,10)))#jump slime
-                if c == 4:
-                    launchPad.append(Rect((x*10,y*10,10,10)))#launchpadright
-                if c == 5:
-                    launchPad2.append(Rect((x*10,y*10,10,10)))#launchpadleft
-                if c == 6:
-                    shield.append(Rect((x*10,y*10,10,10)))
-                if c == 7:
-                    endpoint = [x*10,y*10]
-        portal_state='idle'
-        state='idle'
-        mode = 'idle'
-
-        pl,pw=[50,60] #player length and width
-        px,py=[100,450] 
-
-        hit = None
-        hit1 = None         
-        grav_velocity=0 #the value that will provide constant gravity and will decide how high the player will jump
-        xchange = 0
-        forced_end = False # [x change, y change, frames left]
-        floatingmode = False
-
-        return wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py
-        
+    
     last_tp = time.time()
 
     idle=[]
@@ -496,14 +453,9 @@ def Main(start):
 
         if orangep[-1] != None and hit1:
             draw.circle(screen,(252,69,2),[int(e) for e in orangep[0]],8)
-        screen.blit(cube,(cx,cy))
         frame+=1
         oldpos=[px,py]
-        pRect = Rect(px,py,pl,pw)
-     #   print(hypot(endpoint[0]-px,endpoint[1]-py))
-        if hypot(endpoint[0]-px,endpoint[1]-py) < 90:
-            wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py = reset(wall_rects,wall2_rects,blockList,launchPad,launchPad2,shield,mode,portal_state,state,hit,hit1,grav_velocity,xchange,forced_end,floatingmode,px,py)
-            time.sleep(0.5)
+        
         display.flip()
     
     return operation

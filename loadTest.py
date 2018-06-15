@@ -62,7 +62,7 @@ def Main():
             if Rect(200,50*i+200,600,50).collidepoint((mx,my)):
                 if click:
                     levelName = picList[i]
-                    operation = 'edit'
+                    operation = 'testingLevel'
                     running = False
                     
                     
@@ -72,5 +72,4 @@ def Main():
             text(picList[i][:-4],200,50*i+200)
                            
         display.flip()
-    print(levelName)
     return operation,levelName

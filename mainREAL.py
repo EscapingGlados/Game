@@ -33,8 +33,7 @@ while running:
         
     elif operation == 'testingLevel':
         print("2")
-        operation = testingLevel(startingLevel)
+        operation = testingLevel.Main(startingLevel)
         
-    print(operation)
 quit()
 
