@@ -22,7 +22,7 @@ while running:
         operation = game.Main()
         
     elif operation == 'edit':
-        print("3")
+        
         operation = editTest.Main(levelName)
         
     elif operation == 'load':
@@ -32,7 +32,7 @@ while running:
         operation,startingLevel = loadTest.Main()
         
     elif operation == 'testingLevel':
-        print("2")
+        
         operation = testingLevel.Main(startingLevel)
         
 quit()

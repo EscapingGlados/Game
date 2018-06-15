@@ -3,11 +3,15 @@ from math import *
 import time as t
 import os
 import pickle
-
+mixer.init()
 def Main():
     running = True
     screen = display.set_mode((800,600))
-
+    next_song_notify=USEREVENT+1
+    mixer.music.set_endevent(next_song_notify)
+    
+    theme=mixer.music.load('song.wav')
+    mixer.music.play()
     brick = transform.scale(image.load('surface2.bmp'),(10,10))
     block = transform.scale(image.load('block.png'),(10,10))
     level1=image.load('Level_1_final.png')
@@ -15,7 +19,7 @@ def Main():
     level3=image.load('Level_3_final.png')
     level4=image.load('Level_4_final.png')
     level5=image.load('Level_5_final.png')
-    
+    jump_sound=mixer.Sound('jump.wav')
     cube=transform.scale(image.load('comp_cube.png'),(20,20))
     bluep_sprite=[]
     for i in range(4):
@@ -496,6 +500,7 @@ def Main():
         oldpos = playerpos[:]
         
         if state=='jump' and not forced_end: #if nothing in forced_end
+            
             playerpos=list(playerpos)
             playerpos[1]+=grav_velocity
             grav_velocity+=0.75
@@ -583,6 +588,7 @@ def Main():
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=0
         if keys[K_w] and state!='jump':
+            jump_sound.play()
             state,mode=state_change(state,True,keys[K_d],keys[K_a],mode)
             grav_velocity=-8 #a negative gravity makes it go up
             
@@ -753,6 +759,10 @@ def Main():
     oldpos=[px,py]
     ang=0
     while running:
+        #for e in event.get():
+         #   if e.type==next_song_notify:
+          #      mixer.music.load('song.wav')
+           #     mixer.music.play()
         b_click=False
         o_click=False
         keys=key.get_pressed()
